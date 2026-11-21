@@ -1,0 +1,2 @@
+{"name":"rantaiasa-backend","private":true,"type":"module","scripts":{"start":"node src/index.js","dev":"node --watch src/index.js"},
+"dependencies":{"express":"^4.19.2","cors":"^2.8.5","ethers":"^6.13.0","jsonwebtoken":"^9.0.2","dotenv":"^16.4.5","express-rate-limit":"^7.4.0"}}

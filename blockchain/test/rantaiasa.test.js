@@ -1,0 +1,23 @@
+const {expect}=require("chai");const {ethers}=require("hardhat");
+describe("RantaiAsa",()=>{
+ let reg,aid,admin,officer,oracle,other;const H1=ethers.id("nik-1"),P=202611,PROG=1,REF=ethers.id("ref");
+ const ready=async(s)=>{await reg.connect(officer).registerIdentity(H1,PROG,P);await aid.connect(oracle).attestScore(H1,P,s);};
+ beforeEach(async()=>{[admin,officer,oracle,other]=await ethers.getSigners();
+  reg=await (await ethers.getContractFactory("IdentityRegistry")).deploy(202601,202612);
+  aid=await (await ethers.getContractFactory("AidDisbursement")).deploy(await reg.getAddress(),60);
+  await reg.setProgram(PROG,true);await reg.setProgram(2,true);
+  await reg.grantRole(await reg.OFFICER_ROLE(),officer.address);
+  await aid.grantRole(await aid.OFFICER_ROLE(),officer.address);await aid.grantRole(await aid.ORACLE_ROLE(),oracle.address);});
+ it("1 registrasi baru + event",async()=>{await expect(reg.connect(officer).registerIdentity(H1,PROG,P)).to.emit(reg,"IdentityRegistered").withArgs(H1,PROG,P,officer.address);expect(await reg.isRegistered(H1,P)).to.equal(true);});
+ it("2 duplikat periode sama lintas program ditolak",async()=>{await reg.connect(officer).registerIdentity(H1,PROG,P);await expect(reg.connect(officer).registerIdentity(H1,2,P)).to.be.revertedWithCustomError(reg,"IdentityAlreadyRegistered");});
+ it("3 hash sama periode lain diizinkan",async()=>{await reg.connect(officer).registerIdentity(H1,PROG,P);await reg.connect(officer).registerIdentity(H1,PROG,202612);});
+ it("4 non-officer ditolak",async()=>{await expect(reg.connect(other).registerIdentity(H1,PROG,P)).to.be.reverted;});
+ it("5 disburse tanpa registrasi",async()=>{await aid.connect(oracle).attestScore(H1,P,80);await expect(aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF)).to.be.revertedWithCustomError(aid,"NotRegistered");});
+ it("6 skor di bawah ambang",async()=>{await ready(40);await expect(aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF)).to.be.revertedWithCustomError(aid,"ScoreBelowThreshold");});
+ it("7 skor memenuhi ambang + event",async()=>{await ready(78);await expect(aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF)).to.emit(aid,"AidDisbursed");expect(await aid.totalDisbursements()).to.equal(1);});
+ it("8 disburse ganda ditolak",async()=>{await ready(78);await aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF);await expect(aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF)).to.be.revertedWithCustomError(aid,"AlreadyDisbursed");});
+ it("9 non-oracle attest ditolak",async()=>{await expect(aid.connect(other).attestScore(H1,P,80)).to.be.reverted;});
+ it("10 setThreshold hanya admin",async()=>{await expect(aid.connect(other).setThreshold(70)).to.be.reverted;await aid.setThreshold(70);expect(await aid.threshold()).to.equal(70);});
+ it("11 skor belum di-attest",async()=>{await reg.connect(officer).registerIdentity(H1,PROG,P);await expect(aid.connect(officer).recordDisbursement(H1,PROG,P,100,REF)).to.be.revertedWithCustomError(aid,"ScoreNotAttested");});
+ it("12 revoke teraudit lalu daftar ulang",async()=>{await reg.connect(officer).registerIdentity(H1,PROG,P);await expect(reg.revokeIdentity(H1,P,"salah input")).to.emit(reg,"IdentityRevoked");await reg.connect(officer).registerIdentity(H1,PROG,P);});
+});

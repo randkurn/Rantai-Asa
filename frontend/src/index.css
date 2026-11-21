@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --b: #479ece;
+  --b-d: #2c7fb0;
+  --b-s: rgba(71, 158, 206, 0.14);
+  --b-l: rgba(71, 158, 206, 0.28);
+  --w: #fff;
+  --bg: #050f18;
+  --bg2: #0a1b2a;
+  --card: rgba(255, 255, 255, 0.04);
+  --mut: #9fb8c9;
+  --ok: #5fd7a0;
+  --no: #ff8a8a;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--w);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: 'Sora', 'Inter', system-ui, sans-serif;
+}
+
+/* Custom dark scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050f18;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e3a53;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2c7fb0;
+}
+
+/* Typing cursor animation */
+.type-cursor::after {
+  content: "|";
+  color: #479ece;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Leaflet dark container overrides */
+.leaflet-container {
+  background: #07131d !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+.leaflet-bar a {
+  background: rgba(5, 15, 24, 0.85) !important;
+  color: #fff !important;
+  border-color: rgba(71, 158, 206, 0.28) !important;
+}
+.leaflet-bar a:hover {
+  background: #479ece !important;
+}
+.leaflet-tooltip {
+  background: rgba(5, 15, 24, 0.95) !important;
+  color: #fff !important;
+  border: 1px solid rgba(71, 158, 206, 0.35) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}

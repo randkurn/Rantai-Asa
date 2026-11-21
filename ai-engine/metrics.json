@@ -1,0 +1,97 @@
+{
+  "model_version": "lr-jabar-multidim-2.0",
+  "dataset_size": 10000,
+  "eligible_rate_data": 0.298,
+  "cv_5fold": {
+    "logistic_regression": {
+      "roc_auc": 0.933,
+      "recall": 0.844,
+      "precision": 0.717,
+      "f1": 0.775
+    },
+    "decision_tree": {
+      "roc_auc": 0.898,
+      "recall": 0.834,
+      "precision": 0.666,
+      "f1": 0.741
+    },
+    "gradient_boosting": {
+      "roc_auc": 0.93,
+      "recall": 0.725,
+      "precision": 0.814,
+      "f1": 0.767
+    },
+    "logistic_regression_leave_region_out": {
+      "roc_auc": 0.932,
+      "recall": 0.841,
+      "f1": 0.773
+    }
+  },
+  "threshold_sensitivity": {
+    "45": {
+      "precision": 0.71,
+      "recall": 0.864
+    },
+    "50": {
+      "precision": 0.738,
+      "recall": 0.835
+    },
+    "55": {
+      "precision": 0.763,
+      "recall": 0.827
+    },
+    "60": {
+      "precision": 0.785,
+      "recall": 0.79
+    },
+    "65": {
+      "precision": 0.801,
+      "recall": 0.751
+    },
+    "70": {
+      "precision": 0.826,
+      "recall": 0.724
+    }
+  },
+  "brier": 0.1,
+  "score_percentiles": {
+    "5": 0,
+    "25": 4,
+    "50": 23,
+    "75": 73,
+    "95": 99
+  },
+  "fairness_max_gap_pred_vs_true": 0.079,
+  "accuracy": 0.863,
+  "precision": 0.738,
+  "recall": 0.835,
+  "f1": 0.784,
+  "roc_auc": 0.934,
+  "confusion_matrix": [
+    [
+      1229,
+      176
+    ],
+    [
+      98,
+      497
+    ]
+  ],
+  "feature_weights": {
+    "regional_severity": 0.5703,
+    "regional_depth": 0.2919,
+    "regional_trend": 0.0336,
+    "poverty_line_k": 0.0188,
+    "poor_count_k": -0.0417,
+    "household_size": 0.6764,
+    "income_per_capita_band": -2.2527,
+    "head_education_level": -0.2378,
+    "housing_quality": -0.6436,
+    "has_disabled_or_elderly": 0.3137,
+    "is_civil_servant_or_security": -1.1958,
+    "land_ownership": -0.2011,
+    "has_bpjs": -0.1107,
+    "head_unemployed": 0.1479
+  },
+  "note": "Fitur wilayah = data terbuka Galura Jabar BPS (nyata). Fitur rumah tangga & label = SIMULASI. Arsitektur sesuai Proposal RantaiAsa HackSphere 2026."
+}

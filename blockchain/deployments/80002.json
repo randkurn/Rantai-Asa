@@ -1,0 +1,7 @@
+{
+  "chainId": "80002",
+  "deployer": "0xDebE39681c91F60C010d7C66e443770cf85dF3bf",
+  "IdentityRegistry": "0x964C5ACaEf0FFb0866bb0a0EFF55cA87BF39dD84",
+  "AidDisbursement": "0xDd9E6cffA4DEB9493D6406A839480673Af13859D",
+  "ReportRegistry": "0x8b6aEf6e43B5e028af2d1b606Ec2Ee14837D291d"
+}

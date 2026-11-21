@@ -1,0 +1,67 @@
+# ==========================================
+# RantaiAsa - Git Ignore Configuration
+# ==========================================
+
+# 1. Environment Variables & Secrets (Sesuai AGENTS.md: Secret hanya di .env)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# 2. Python & Virtual Environments (ai-engine)
+venv/
+**/venv/
+.venv/
+**/.venv/
+env/
+**/env/
+ENV/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+**/data/synthetic_households.csv
+
+# 3. Node & Dependencies (backend, frontend, blockchain)
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 4. Blockchain & Hardhat Compilation Artifacts
+blockchain/artifacts/
+blockchain/cache/
+blockchain/typechain-types/
+artifacts/
+cache/
+typechain-types/
+
+# 5. Frontend & Build Outputs (Vite)
+dist/
+**/dist/
+dist-ssr/
+.vite/
+**/.vite/
+
+# 6. Logs, Coverage & Temporary Files
+*.log
+logs/
+coverage/
+.nyc_output/
+
+# 7. OS & Editor Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+
+docs/
