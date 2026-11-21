@@ -1,19 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 
 export function useTheme() {
+  // Selalu default ke lightmode sesuai instruksi pengguna
   const [theme, setTheme] = useState(() => {
-    // Read saved preference or default to dark
-    return localStorage.getItem("rantaiasa_theme") || "dark";
+    return localStorage.getItem("rantaiasa_theme") || "light";
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("rantaiasa_theme", theme);
-  }, [theme]);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((t) => (t === "dark" ? "light" : "dark"));
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("rantaiasa_theme", "light");
   }, []);
 
-  return { theme, toggleTheme, isDark: theme === "dark" };
+  // Switch mode dinonaktifkan sementara (tetap lightmode)
+  const toggleTheme = useCallback(() => {
+    // Mode dikunci ke lightmode
+  }, []);
+
+  return { theme: "light", toggleTheme, isDark: false };
 }

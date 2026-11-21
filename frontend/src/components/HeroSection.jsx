@@ -41,47 +41,19 @@ export default function HeroSection({
 }) {
   const { isDark } = useTheme();
   const [typedText, setTypedText] = useState("");
-  const TAGLINES = [
-    "Wujudkan bantuan sosial transparan & bebas penerima ganda.",
-    "Satu identitas, tepat sasaran, tanpa data ganda.",
-    "Bantuan sampai ke warga yang benar-benar membutuhkan.",
-    "Setiap rupiah tercatat terbuka di audit publik."
-  ];
+  const tagline =
+    "Wujudkan bantuan sosial yang transparan dan bebas penerima ganda";
+
+  // Warna target gradasi mengikuti tema aktif (#050f18 di mode gelap, #ffffff di mode terang)
+  const fadeRgb = isDark ? "5, 15, 24" : "255, 255, 255";
 
   useEffect(() => {
-    let sentenceIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    let currentTimer = null;
-
-    const tick = () => {
-      const fullText = TAGLINES[sentenceIdx];
-
-      if (!isDeleting) {
-        setTypedText(fullText.slice(0, charIdx + 1));
-        charIdx++;
-        if (charIdx === fullText.length) {
-          // Pause sejenak saat kalimat selesai (1.8 detik)
-          isDeleting = true;
-          currentTimer = setTimeout(tick, 1800);
-          return;
-        }
-        currentTimer = setTimeout(tick, 35); // Kecepatan mengetik cepat & smooth
-      } else {
-        setTypedText(fullText.slice(0, charIdx - 1));
-        charIdx--;
-        if (charIdx === 0) {
-          isDeleting = false;
-          sentenceIdx = (sentenceIdx + 1) % TAGLINES.length;
-          currentTimer = setTimeout(tick, 300);
-          return;
-        }
-        currentTimer = setTimeout(tick, 18); // Kecepatan menghapus gesit
-      }
-    };
-
-    currentTimer = setTimeout(tick, 400);
-    return () => clearTimeout(currentTimer);
+    let idx = 0;
+    const timer = setInterval(() => {
+      setTypedText(tagline.slice(0, idx++));
+      if (idx > tagline.length) clearInterval(timer);
+    }, 45);
+    return () => clearInterval(timer);
   }, []);
 
   const currentMetric = METRICS.find((m) => m.key === mapMetric) || METRICS[0];
@@ -114,7 +86,7 @@ export default function HeroSection({
   return (
     <section
       id="top"
-      className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-16 text-center"
+      className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-36 text-center"
     >
       <div className="relative z-10 mx-auto max-w-5xl">
         <div
@@ -273,6 +245,22 @@ export default function HeroSection({
           </a>
         </div>
       </div>
+
+      {/* Gradasi pudar bertahap di batas bawah HeroSection */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 transition-all duration-300"
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            rgba(${fadeRgb}, 0) 0%,
+            rgba(${fadeRgb}, 0.08) 25%,
+            rgba(${fadeRgb}, 0.28) 50%,
+            rgba(${fadeRgb}, 0.62) 75%,
+            rgba(${fadeRgb}, 0.88) 90%,
+            rgba(${fadeRgb}, 1) 100%
+          )`,
+        }}
+      />
     </section>
   );
 }
