@@ -1,27 +1,31 @@
-# STATUS / LAST STATE — 21 Nov 2026 (Frontend Redesign: Tema Dark Space & Integrasi Aset Logo Resmi RantaiAsa)
+# STATUS / LAST STATE — 21 Nov 2026 (Fitur Dashboard & Autentikasi Petugas Terpadu)
 
 ## SELESAI sesi ini
 
-### Penyesuaian Frontend Dashboard Sesuai Desain & Logo Resmi Pengguna ✅
-- **Identitas & Aset Logo Resmi**:
-  - Logo horizontal resmi (`frontend/public/logo-rantaiasa.png`): Kombinasi simbol dua mata rantai saling terhubung + tipografi "Rantai" (putih) dan "Asa" (cyan `#479ece`) telah disematkan secara presisi pada Sticky Navigation Header dan Footer.
-  - Logo icon (`frontend/public/logo-icon.png`): Dipangkas rapi (trimmed) dan diintegrasikan sebagai favicon browser, icon modal inspector, dan modal wizard petugas.
-  - Badge wilayah: `JABAR` (mono badge dengan border cyan semi-transparan) mendampingi logo horizontal di navbar.
-- **Palet Warna & Styling Dark Theme**:
-  - Mengadopsi CSS kustom: `--bg: #050f18` (deep space navy), `--bg2: #0a1b2a`, `--b: #479ece`, `--mut: #9fb8c9`, `--ok: #5fd7a0`, `--no: #ff8a8a`.
-  - Peta Leaflet Jawa Barat 27 Kab/Kota kini menggunakan basemap Carto dark (`dark_all`), box container berbayang cyan `shadow-[0_24px_70px_rgba(71,158,206,0.28)]`, overlay info interaktif, toggle 4 metrik, dan gradient bar legend.
-  - Efek teks mengetik dinamis (typing tagline) di hero: *"Wujudkan bantuan sosial yang transparan dan bebas duplikasi"*.
-- **Struktur Section Selaras**:
-  - **Hero**: Peta Jawa Barat + Wordmark + Typing effect + Quick CTAs.
-  - **Tentang RantaiAsa**: Narasi reformasi DTKS 21M + 4 Card fitur (Anti-duplikasi, Transparan, Skor AI Multidimensi, Tak bisa diubah).
-  - **Alur Verifikasi**: Flowchart 3 gerbang verifikasi & rute penolakan + 4 KPI interaktif (Penerima terdaftar, Penyaluran tercatat, Duplikat ditolak, Dana tersalurkan).
-  - **Kesenjangan Wilayah**: Benchmark P2 27 Kab/Kota Jawa Barat + Riwayat tren BPS 2004–2025 (interactive bar chart) + 4 Card indikator Galura Jabar nyata.
-  - **Ledger Audit Publik**: Filter (Semua, Tersalurkan, Ditolak), tombol simulasi cepat (*+ Simulasikan penyaluran* & *Uji pendaftaran ganda*), live table, dan Modal Event Inspector dengan raw Solidity event log.
-  - **Modul Pelaporan Warga (`ReportModule.jsx`)**: Desain diselaraskan ke tema dark dengan form pengaduan anonim dan cek status token.
-  - **Portal Petugas (3-Step Wizard)**: Terhubung langsung ke model AI multidimensi v2.0 (`lr-jabar-multidim-2.0`) & smart contract.
+### Dashboard & Login Sistem Petugas Operasional Bantuan (RantaiAsa Officer Portal) ✅
+- **Sistem Autentikasi Petugas (`AuthContext.jsx` & `OfficerLoginModal.jsx`)**:
+  - Mendukung dua metode login:
+    1. **Web3 Wallet Signature (EIP-191)**: Menggunakan wallet ber-role `OFFICER` (sinkron dengan `backend/src/index.js` endpoint `/auth/nonce` dan `/auth/verify`).
+    2. **NIP & Kredensial Petugas**: Memudahkan simulasi verifikator dinas sosial di lapangan.
+  - Sesi otomatis disimpan aman di `localStorage` (`token` & profil petugas).
+- **Halaman Dashboard Terpadu (`pages/OfficerDashboard.jsx`)**:
+  - **OPERASIONAL BANTUAN**:
+    - **Data Penerima**: Tabel status verifikasi, agregat KPI nominal tersalurkan, dan skor kelayakan AI.
+    - **Registrasi Penerima**: Input NIK 16 digit, pemilihan 27 Kab/Kota Jawa Barat, dan pseudonimasi instan ke HMAC-SHA256.
+    - **Verifikasi Identitas**: Cek anti-duplikasi on-chain ke kontrak `IdentityRegistry.sol`.
+    - **Penilaian Kelayakan AI**: Evaluasi realtime 14 fitur multidimensi BPS Jawa Barat terhubung ke `http://localhost:8000/score` dengan visualisasi bobot faktor dominan.
+    - **Penyaluran Bantuan**: Eksekusi transaksi `disburseAid()` on-chain ke `AidDisbursement.sol`.
+  - **TRANSPARANSI & AUDIT**:
+    - **Riwayat Aktivitas**: Audit trail waktu, ref ID, nominal, dan status on-chain.
+    - **Pencarian Transaksi**: Filter instan berdasarkan NIK masked, Ref ID, dan Tx Hash.
+    - **Blockchain Explorer**: Tautan langsung ke kontrak Polygon Amoy (IdentityRegistry, AidDisbursement, ReportRegistry).
+  - **AKUN**:
+    - **Koneksi Wallet**: Informasi status sinkronisasi Web3 & address petugas.
+    - **Profil Petugas**: Detail NIP, role, dinas sosial, dan wilayah penugasan Jawa Barat.
+    - **Keluar**: Logout sesi aman dan redirect ke portal publik.
 - **Hasil Build & Uji**:
-  - ✅ `cd frontend; npx vite build` sukses 0 error (16.04s).
-  - ✅ Semua fitur interaktif live berfungsi normal.
+  - ✅ `cd frontend; npx vite build` sukses 0 error (8.49s).
+  - ✅ `cd blockchain; .\node_modules\.bin\hardhat test` sukses (18/18 tests passing).
 
 ### Model AI Multidimensi v2.0: `lr-jabar-multidim-2.0` (Optimal Sesuai Proposal HackSphere 2026) ✅
 - **Kesesuaian Proposal (Section 3, 4.c, 6.c)**:
