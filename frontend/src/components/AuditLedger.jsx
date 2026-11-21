@@ -30,12 +30,9 @@ export default function AuditLedger({
   }, [auditRecords, ledgerFilter, searchQuery]);
 
   return (
-    <section id="ledger" className="bg-[#0a1b2a] px-4 py-20">
+    <section id="ledger" className="bg-[#0a1b2a] px-4 pt-8 pb-20">
       <div className="mx-auto max-w-[1080px]">
         <div className="mx-auto mb-10 max-w-[680px] text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(71,158,206,0.28)] bg-[rgba(71,158,206,0.14)] px-3 py-1 text-xs">
-            Riwayat Penyaluran Publik
-          </span>
           <h2 className="font-heading mt-3.5 mb-2.5 text-3xl font-bold leading-tight text-white sm:text-4xl">
             Pantau langsung setiap{" "}
             <em className="not-italic text-[#479ece]">
@@ -56,7 +53,7 @@ export default function AuditLedger({
               onClick={() => setLedgerFilter("all")}
               className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "all"
-                  ? "bg-[#479ece] font-bold text-[#04121c]"
+                  ? "bg-[#479ece] font-bold !text-white"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
@@ -66,7 +63,7 @@ export default function AuditLedger({
               onClick={() => setLedgerFilter("ok")}
               className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "ok"
-                  ? "bg-[#479ece] font-bold text-[#04121c]"
+                  ? "bg-[#479ece] font-bold !text-white"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
@@ -77,7 +74,7 @@ export default function AuditLedger({
               onClick={() => setLedgerFilter("no")}
               className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "no"
-                  ? "bg-[#479ece] font-bold text-[#04121c]"
+                  ? "bg-[#479ece] font-bold !text-white"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
@@ -89,7 +86,7 @@ export default function AuditLedger({
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={onSimulateDisburse}
-              className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:brightness-110"
+              className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-3.5 py-1.5 text-xs font-semibold !text-white shadow-sm transition hover:brightness-110"
             >
               + Simulasikan pencairan
             </button>

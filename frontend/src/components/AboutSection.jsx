@@ -58,13 +58,10 @@ const FEATURES = [
 
 export default function AboutSection({ aiModelVersion }) {
   return (
-    <section id="tentang" className="px-4 py-20">
+    <section id="tentang" className="px-4 pt-8 pb-20">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs">
-            Tentang RantaiAsa
-          </span>
           <h2 className="font-heading mt-3.5 mb-2.5 text-3xl font-bold leading-tight text-white sm:text-4xl">
             Memastikan bantuan{" "}
             <em className="not-italic text-[#479ece]">cair sekali</em> ke
@@ -85,15 +82,13 @@ export default function AboutSection({ aiModelVersion }) {
               Kenapa penyaluran bansos perlu diawasi bersama?
             </h3>
             <p>
-              <p>
-                Pada tahun 2021, Kementerian Sosial menemukan lebih dari{" "}
-                <strong>
-                  21 juta data penerima yang masuk lebih dari satu kali
-                </strong>
-                . Sistem biasa masih bisa diakali dengan memasukkan nama yang
-                sama. Di RantaiAsa, nomor KTP disamarkan menjadi kode permanen
-                agar bantuan tidak pernah cair dua kali ke orang yang sama.
-              </p>
+              Pada tahun 2021, Kementerian Sosial menemukan lebih dari{" "}
+              <strong>
+                21 juta data penerima yang masuk lebih dari satu kali
+              </strong>
+              . Sistem biasa masih bisa diakali dengan memasukkan nama yang
+              sama. Di RantaiAsa, nomor KTP disamarkan menjadi kode permanen
+              agar bantuan tidak pernah cair dua kali ke orang yang sama.
             </p>
 
             <ul className="space-y-2.5 pt-2 text-xs text-white">
@@ -115,11 +110,14 @@ export default function AboutSection({ aiModelVersion }) {
                 key={feat.title}
                 className="rounded-2xl border border-sky-400/20 bg-white/[0.04] p-5 shadow-lg transition hover:border-sky-400/50"
               >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] text-white">
+                <div
+                  className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] !text-white"
+                  style={{ color: "#ffffff" }}
+                >
                   <svg
-                    className="h-5 w-5"
+                    className="h-5 w-5 !text-white"
                     fill="none"
-                    stroke="currentColor"
+                    stroke="#ffffff"
                     strokeWidth="2"
                     viewBox="0 0 24 24"
                   >

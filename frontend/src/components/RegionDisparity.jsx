@@ -40,7 +40,7 @@ function getDepthLabel(val = 0.97) {
   return "Mendekati Layak";
 }
 
-// Urutan bersih dari urgensi tertinggi ke terendah (tanpa menyelipkan Rata-rata Jabar)
+// Data perbandingan lengkap dengan persentase lebar batang
 const COMPARISON_REGIONS = [
   { name: "Kab. Tasikmalaya", value: 0.54, width: "92%", poorK: 191.2 },
   { name: "Kab. Cianjur", value: 0.41, width: "70%", poorK: 242.1 },
@@ -49,7 +49,6 @@ const COMPARISON_REGIONS = [
   { name: "Kota Depok", value: 0.07, width: "16%", poorK: 62.8 },
 ];
 
-// Cadangan data 27 Kab/Kota jika dropdown dipakai mandiri
 const JABAR_QUICK_LIST = [
   {
     kode: "3201",
@@ -269,25 +268,8 @@ const JABAR_QUICK_LIST = [
   },
 ];
 
-// Riwayat 6 titik waktu yang jelas (2005 - 2025)
-function buildMilestoneHistory(latestP2 = 0.23) {
-  const milestones = [
-    { tahun: "2005", factor: 1.85 },
-    { tahun: "2010", factor: 1.62 },
-    { tahun: "2015", factor: 1.38 },
-    { tahun: "2020", factor: 1.24 },
-    { tahun: "2023", factor: 1.08 },
-    { tahun: "2025", factor: 1.0 },
-  ];
-  return milestones.map((m) => ({
-    tahun: m.tahun,
-    p2: Number(Math.min(1.05, latestP2 * m.factor).toFixed(3)),
-  }));
-}
-
 export default function RegionDisparity({
   activeRegion,
-  p2TrendHistory,
   regionStats = [],
   onSelectRegion,
 }) {
@@ -316,29 +298,11 @@ export default function RegionDisparity({
   const currentDepth = selectedRegion?.p1_terkini ?? 0.97;
   const activeStatus = getStatusInfo(currentUrgency);
 
-  // Gunakan riwayat 6 titik tahun agar grafik batang jelas, proporsional, dan mudah dibaca
-  const historyList =
-    p2TrendHistory && p2TrendHistory.length >= 6
-      ? p2TrendHistory
-          .filter(
-            (_, idx) =>
-              idx % Math.ceil(p2TrendHistory.length / 6) === 0 ||
-              idx === p2TrendHistory.length - 1,
-          )
-          .slice(-6)
-      : buildMilestoneHistory(currentUrgency);
-
-  const firstStatus = getStatusInfo(historyList[0]?.p2 ?? 0.5);
-  const latestStatus = getStatusInfo(currentUrgency);
-
   return (
-    <section id="wilayah" className="px-4 py-20">
+    <section id="wilayah" className="px-4 pt-8 pb-20">
       <div className="mx-auto max-w-[1080px]">
         {/* Header */}
         <div className="mx-auto mb-10 max-w-[680px] text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(71,158,206,0.28)] bg-[rgba(71,158,206,0.14)] px-3 py-1 text-xs">
-            Kondisi Tiap Wilayah
-          </span>
           <h2 className="font-heading mt-3.5 mb-2.5 text-3xl font-bold leading-tight text-white sm:text-4xl">
             Kebutuhan bantuan di tiap daerah{" "}
             <em className="not-italic text-[#479ece]">tidak sama</em>
@@ -351,24 +315,18 @@ export default function RegionDisparity({
         </div>
 
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-          {/* Kiri: Perbandingan Antar Daerah & Grafik Tren */}
+          {/* Kiri: Grafik Batang Urgensi Antar Daerah */}
           <div className="space-y-5 rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-6 lg:col-span-7">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 className="font-heading text-base font-bold text-white">
-                  Perbandingan Tingkat Urgensi Bantuan
-                </h3>
-                <p className="text-[11px] text-[#9fb8c9]">
-                  Urutan wilayah dari prioritas tertinggi hingga terendah
-                </p>
-              </div>
-              <span className="rounded-md border border-[rgba(71,158,206,0.25)] bg-[rgba(71,158,206,0.12)] px-2.5 py-1 font-mono text-[11px] text-[#479ece]">
-                Data Resmi BPS
-              </span>
+            <div>
+              <h3 className="font-heading text-base font-bold text-white">
+                Perbandingan Tingkat Urgensi Bantuan
+              </h3>
+              <p className="text-[11px] text-[#9fb8c9]">
+                Urutan wilayah dari prioritas tertinggi hingga terendah
+              </p>
             </div>
 
-            {/* Daftar Perbandingan Urut Tertinggi -> Terendah */}
-            <div className="space-y-3.5 text-xs">
+            <div className="space-y-4 text-xs">
               {COMPARISON_REGIONS.map((item) => {
                 const status = getStatusInfo(item.value);
                 return (
@@ -377,254 +335,24 @@ export default function RegionDisparity({
                       <span className="font-semibold text-white">
                         {item.name}
                       </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] text-[#9fb8c9]">
-                          {item.poorK.toLocaleString("id-ID")} rb jiwa
-                        </span>
-                        <span
-                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${status.badgeClass}`}
-                        >
-                          {status.label}
-                        </span>
-                      </div>
+                        {status.label}
                     </div>
-                    <div className="h-2.5 overflow-hidden rounded-full bg-slate-500/20">
+                    {/* Progress Bar Interaktif */}
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
                       <div
-                        className={`h-full rounded-full bg-gradient-to-r ${status.barClass}`}
+                        className={`h-full rounded-full bg-gradient-to-r ${status.barClass} transition-all duration-500`}
                         style={{ width: item.width }}
                       />
                     </div>
                   </div>
                 );
               })}
-
-              {/* Catatan Pembanding Rata-rata Provinsi */}
-              <div className="flex items-center justify-between rounded-xl border border-dashed border-[rgba(71,158,206,0.3)] bg-[rgba(71,158,206,0.06)] px-3.5 py-2 text-[11px]">
-                <span className="text-[#9fb8c9]">
-                  Patokan Rata-rata Provinsi Jawa Barat:
-                </span>
-                <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 font-bold text-amber-500">
-                  Sedang (148,5 rb jiwa/daerah)
-                </span>
-              </div>
-            </div>
-
-            {/* Grafik Garis Perkembangan 20 Tahun */}
-            {/* Grafik Garis Perkembangan 20 Tahun */}
-            <div className="space-y-3 border-t border-slate-500/20 pt-4">
-              <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
-                <span className="font-semibold text-white">
-                  Perubahan 20 Tahun Terakhir:{" "}
-                  <span className="text-[#479ece]">{selectedRegion?.nama}</span>
-                </span>
-                <span className="text-[11px] font-medium text-emerald-500">
-                  ↓ Grafik menurun = kondisi membaik
-                </span>
-              </div>
-
-              <div className="rounded-xl bg-slate-500/10 px-3 pt-3 pb-2">
-                {(() => {
-                  const points = historyList.map((item, idx) => {
-                    const x = 36 + idx * 70;
-                    const ratio = Math.min(1, Math.max(0.08, item.p2 / 1.05));
-                    const y = Math.round(78 - ratio * 48);
-                    return {
-                      ...item,
-                      x,
-                      y,
-                      status: getStatusInfo(item.p2),
-                    };
-                  });
-
-                  const linePoints = points
-                    .map((p) => `${p.x},${p.y}`)
-                    .join(" ");
-                  const areaPoints = `36,88 ${linePoints} ${points[points.length - 1].x},88`;
-
-                  return (
-                    <svg
-                      viewBox="0 0 422 112"
-                      className="h-28 w-full overflow-visible"
-                    >
-                      <defs>
-                        <linearGradient
-                          id="trendAreaGrad"
-                          x1="0"
-                          y1="0"
-                          x2="1"
-                          y2="0"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor={points[0]?.status.barColor || "#ef4444"}
-                            stopOpacity="0.22"
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor={latestStatus.barColor}
-                            stopOpacity="0.22"
-                          />
-                        </linearGradient>
-                        <linearGradient
-                          id="trendLineGrad"
-                          x1="0"
-                          y1="0"
-                          x2="1"
-                          y2="0"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor={points[0]?.status.barColor || "#ef4444"}
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor={latestStatus.barColor}
-                          />
-                        </linearGradient>
-                      </defs>
-
-                      <line
-                        x1="20"
-                        y1="88"
-                        x2="402"
-                        y2="88"
-                        stroke="currentColor"
-                        strokeOpacity="0.12"
-                        strokeWidth="1"
-                      />
-
-                      <polygon points={areaPoints} fill="url(#trendAreaGrad)" />
-
-                      <polyline
-                        fill="none"
-                        stroke="url(#trendLineGrad)"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        points={linePoints}
-                      />
-
-                      {points.map((p, idx) => {
-                        const isLatest = idx === points.length - 1;
-                        return (
-                          <g key={p.tahun}>
-                            <text
-                              x={p.x}
-                              y={p.y - 10}
-                              textAnchor="middle"
-                              className="fill-current text-[9.5px] font-semibold opacity-80"
-                            >
-                              {p.status.label.replace("Sangat ", "Sgt. ")}
-                            </text>
-
-                            {isLatest && (
-                              <circle
-                                cx={p.x}
-                                cy={p.y}
-                                r="8"
-                                fill={p.status.barColor}
-                                fillOpacity="0.25"
-                              />
-                            )}
-
-                            <circle
-                              cx={p.x}
-                              cy={p.y}
-                              r={isLatest ? "5" : "4"}
-                              fill={p.status.barColor}
-                              stroke="#ffffff"
-                              strokeWidth="1.5"
-                            />
-
-                            <text
-                              x={p.x}
-                              y="104"
-                              textAnchor="middle"
-                              className={`fill-current font-mono text-[10.5px] ${
-                                isLatest
-                                  ? "font-bold opacity-100"
-                                  : "opacity-65"
-                              }`}
-                            >
-                              {p.tahun}
-                            </text>
-                          </g>
-                        );
-                      })}
-                    </svg>
-                  );
-                })()}
-              </div>
-
-              <p className="text-[11px] text-[#9fb8c9]">
-                {firstStatus.label === latestStatus.label ? (
-                  latestStatus.label === "Rendah" ? (
-                    <>
-                      Kondisi di{" "}
-                      <strong className="text-white">
-                        {selectedRegion?.nama}
-                      </strong>{" "}
-                      tetap stabil di kategori{" "}
-                      <strong style={{ color: latestStatus.barColor }}>
-                        {latestStatus.label}
-                      </strong>{" "}
-                      sejak 2005 hingga 2025.
-                    </>
-                  ) : (
-                    <>
-                      Tingkat urgensi di{" "}
-                      <strong className="text-white">
-                        {selectedRegion?.nama}
-                      </strong>{" "}
-                      masih bertahan di kategori{" "}
-                      <strong style={{ color: latestStatus.barColor }}>
-                        {latestStatus.label}
-                      </strong>{" "}
-                      sejak 2005 hingga 2025, sehingga tetap perlu perhatian
-                      khusus.
-                    </>
-                  )
-                ) : (
-                  <>
-                    Tingkat urgensi di{" "}
-                    <strong className="text-white">
-                      {selectedRegion?.nama}
-                    </strong>{" "}
-                    membaik dari{" "}
-                    <strong style={{ color: firstStatus.barColor }}>
-                      {firstStatus.label}
-                    </strong>{" "}
-                    (2005) menjadi{" "}
-                    <strong style={{ color: latestStatus.barColor }}>
-                      {latestStatus.label}
-                    </strong>{" "}
-                    pada 2025.
-                  </>
-                )}
-              </p>
             </div>
           </div>
 
-          {/* Kanan: Pemilih Wilayah Langsung + 4 Kartu Detail */}
+          {/* Kanan: Dropdown Wilayah & Detail Kartu */}
           <div className="space-y-3.5 lg:col-span-5">
-            {/* Dropdown Pilih Kota/Kabupaten Langsung di Tempat */}
-            <div className="rounded-2xl border border-[#479ece]/40 bg-[#479ece]/10 p-4">
-              <style>{`
-    #region-selector,
-    #region-selector option {
-      background-color: #071826;
-      color: #ffffff;
-    }
-    .light #region-selector,
-    .light #region-selector option,
-    body.light #region-selector,
-    body.light #region-selector option,
-    [data-theme="light"] #region-selector,
-    [data-theme="light"] #region-selector option {
-      background-color: #ffffff !important;
-      color: #0f172a !important;
-    }
-  `}</style>
+            <div className="rounded-2xl border border-[#479ece]/40  p-4">
               <label
                 htmlFor="region-selector"
                 className="mb-1.5 block text-xs font-semibold text-white"
@@ -672,26 +400,6 @@ export default function RegionDisparity({
                   )}
                 </strong>{" "}
                 untuk keluarga 4 orang).
-              </small>
-            </div>
-
-            <div className="rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-4">
-              <div className="mb-1 flex items-center justify-between text-xs">
-                <span className="text-[#9fb8c9]">Warga Kurang Mampu</span>
-                <span className="font-mono text-[10px] text-emerald-500">
-                  Data 2025
-                </span>
-              </div>
-              <div className="font-heading text-2xl font-extrabold text-[#479ece]">
-                {Number(
-                  selectedRegion?.penduduk_miskin_k || 401.8,
-                ).toLocaleString("id-ID")}{" "}
-                <span className="text-base font-normal text-[#9fb8c9]">
-                  ribu jiwa
-                </span>
-              </div>
-              <small className="mt-0.5 block text-[11px] text-[#9fb8c9]">
-                Total warga yang membutuhkan dukungan bantuan sosial menurut BPS
               </small>
             </div>
 

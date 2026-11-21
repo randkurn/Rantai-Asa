@@ -6,7 +6,7 @@ export default function CtaSection({ onOpenReports }) {
   const fadeRgb = isDark ? "10, 27, 42" : "255, 255, 255";
 
   return (
-    <section
+    <section id="report"
       className="relative overflow-hidden px-4 pt-36 pb-20 text-center"
       style={{
         background:
@@ -29,14 +29,8 @@ export default function CtaSection({ onOpenReports }) {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[680px]">
-        <span
-          className="inline-flex items-center gap-2 rounded-full border border-[rgba(71,158,206,0.28)] bg-[rgba(71,158,206,0.14)] px-3.5 py-1 text-xs"
-          style={{ color: "#bfe3f6" }}
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-[#479ece]" />
-          Pengawasan Bersama Masyarakat Jawa Barat
-        </span>
+      <div className="relative z-10 mt-20 mx-auto max-w-[680px]">
+        
 
         <h2
           className="font-heading mt-4 mb-3 text-3xl font-bold leading-tight sm:text-4xl"

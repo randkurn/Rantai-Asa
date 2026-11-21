@@ -30,6 +30,13 @@ const METRICS = [
   },
 ];
 
+const TAGLINES = [
+  "Wujudkan bantuan sosial yang transparan dan bebas penerima ganda",
+  "Setiap bantuan tercatat terbuka dan bisa diawasi bersama",
+  "Pastikan bantuan tepat sasaran untuk keluarga yang benar-benar berhak",
+  "Satu identitas satu hak bantuan, cegah penyaluran berulang",
+];
+
 export default function HeroSection({
   enrichedRegions,
   selectedRegionCode,
@@ -40,22 +47,38 @@ export default function HeroSection({
   onOpenOfficerModal,
 }) {
   const { isDark } = useTheme();
-  const [typedText, setTypedText] = useState("");
-  const tagline =
-    "Wujudkan bantuan sosial yang transparan dan bebas penerima ganda";
+  const [taglineIndex, setTaglineIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Warna target gradasi mengikuti tema aktif (#050f18 di mode gelap, #ffffff di mode terang)
   const fadeRgb = isDark ? "5, 15, 24" : "255, 255, 255";
 
   useEffect(() => {
-    let idx = 0;
-    const timer = setInterval(() => {
-      setTypedText(tagline.slice(0, idx++));
-      if (idx > tagline.length) clearInterval(timer);
-    }, 45);
-    return () => clearInterval(timer);
-  }, []);
+    const currentTagline = TAGLINES[taglineIndex];
 
+    // Jeda sejenak setelah selesai mengetik satu kalimat penuh
+    if (!isDeleting && subIndex === currentTagline.length) {
+      const pauseTimer = setTimeout(() => setIsDeleting(true), 2200);
+      return () => clearTimeout(pauseTimer);
+    }
+
+    // Pindah ke kalimat berikutnya setelah selesai menghapus
+    if (isDeleting && subIndex === 0) {
+      setIsDeleting(false);
+      setTaglineIndex((prev) => (prev + 1) % TAGLINES.length);
+      return;
+    }
+
+    const speed = isDeleting ? 22 : 45;
+    const timer = setTimeout(() => {
+      setSubIndex((prev) => prev + (isDeleting ? -1 : 1));
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [subIndex, isDeleting, taglineIndex]);
+
+  const typedText = TAGLINES[taglineIndex].slice(0, subIndex);
   const currentMetric = METRICS.find((m) => m.key === mapMetric) || METRICS[0];
 
   const getMetricValue = () => {
@@ -89,18 +112,6 @@ export default function HeroSection({
       className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-36 text-center"
     >
       <div className="relative z-10 mx-auto max-w-5xl">
-        <div
-          className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-300/50 bg-sky-950/40 px-4 py-1.5 text-xs"
-          style={{
-            color: "#e0f2fe",
-            textShadow: "0 1px 3px rgba(0,0,0,.65)",
-          }}
-        >
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
-          <span style={{ color: "#f0f9ff", fontWeight: 700 }}>
-            Pengawasan Bantuan Sosial Jawa Barat yang Terbuka untuk Publik
-          </span>
-        </div>
 
         <h1
           className="font-heading my-3 text-4xl font-extrabold leading-none tracking-wider sm:text-5xl lg:text-6xl"
@@ -191,7 +202,7 @@ export default function HeroSection({
                 onClick={() => setMapMetric(item.key)}
                 className={`cursor-pointer rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                   mapMetric === item.key
-                    ? "bg-[#479ece] font-bold text-[#04121c]"
+                    ? "bg-[#479ece] font-bold text-white shadow-md"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
@@ -213,9 +224,9 @@ export default function HeroSection({
           </div>
         </div>
 
-        {/* Tagline Animasi */}
+        {/* Tagline Animasi Bergantian */}
         <div
-          className="font-heading type-cursor flex min-h-[30px] items-center justify-center gap-1 text-lg font-bold sm:text-xl"
+          className="font-heading type-cursor flex min-h-[56px] items-center justify-center gap-1 px-2 text-lg font-bold sm:min-h-[32px] sm:text-xl"
           style={{
             color: "#ffffff",
             textShadow: "0 2px 8px rgba(0,0,0,.8)",
@@ -225,7 +236,7 @@ export default function HeroSection({
         </div>
 
         {/* Tombol Utama */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-6 mb-16 flex flex-wrap items-center justify-center gap-3">
           <a
             href="#alur"
             className="cursor-pointer rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
