@@ -30,7 +30,7 @@ export default function AuditLedger({
     <section id="ledger" className="py-20 px-4 bg-[#0a1b2a]">
       <div className="max-w-[1080px] mx-auto">
         <div className="text-center max-w-[680px] mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(71,158,206,0.14)] border border-[rgba(71,158,206,0.28)] text-xs text-[#d6ecf8]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(71,158,206,0.14)] border border-[rgba(71,158,206,0.28)] text-xs ">
             Ledger Audit Publik
           </span>
           <h2 className="font-heading font-bold text-3xl sm:text-4xl text-white mt-3.5 mb-2.5 leading-tight">

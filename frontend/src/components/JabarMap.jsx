@@ -4,14 +4,15 @@ import { REGION_NAMES } from "../geoConfig.js";
 
 function getRedToGreenColor(value, min, max) {
   if (value === null || value === undefined || Number.isNaN(value)) {
-    return "#22c55e"; // Hijau default
+    return "#22c55e";
   }
-  const ratio = max === min ? 0.5 : Math.max(0, Math.min(1, (value - min) / (max - min)));
+  const ratio =
+    max === min ? 0.5 : Math.max(0, Math.min(1, (value - min) / (max - min)));
 
-  if (ratio < 0.25) return "#22c55e"; // Hijau (Kebutuhan Rendah)
-  if (ratio < 0.5) return "#eab308";  // Kuning
-  if (ratio < 0.75) return "#f97316"; // Oranye
-  return "#ef4444";                   // Merah (Kebutuhan Tinggi)
+  if (ratio < 0.25) return "#22c55e";
+  if (ratio < 0.5) return "#eab308";
+  if (ratio < 0.75) return "#f97316";
+  return "#ef4444";
 }
 
 export default function JabarMap({
@@ -33,26 +34,24 @@ export default function JabarMap({
     return stat.p2_terkini;
   };
 
-  // 1. Buat instance peta Leaflet sekali saja
+  // 1. Static Leaflet dengan zoomSnap desimal agar ukuran Jabar pas memenuhi box
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [-6.92, 107.61],
-      zoom: 8,
+      center: [-6.95, 107.6],
+      zoom: 8.4,
+      zoomSnap: 0.1,
       zoomControl: false,
+      attributionControl: false,
+      dragging: false,
       scrollWheelZoom: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+      boxZoom: false,
+      keyboard: false,
     });
 
-    L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-  {
-    attribution: "&copy; Esri &copy; OpenStreetMap",
-    maxZoom: 16,
-  }
-).addTo(map);
-
-    L.control.zoom({ position: "bottomright" }).addTo(map);
     mapInstanceRef.current = map;
 
     return () => {
@@ -61,7 +60,7 @@ export default function JabarMap({
     };
   }, []);
 
-  // 2. Gambar ulang warna GeoJSON setiap kali data, metrik, atau wilayah aktif berubah
+  // 2. Render GeoJSON Jawa Barat
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -77,7 +76,7 @@ export default function JabarMap({
     const minVal = values.length ? Math.min(...values) : 0;
     const maxVal = values.length ? Math.max(...values) : 1;
 
-    const renderGeoJson = (data) => {
+    const renderGeoJson = (data, shouldFitBounds = false) => {
       if (geoLayerRef.current) {
         geoLayerRef.current.remove();
       }
@@ -92,7 +91,7 @@ export default function JabarMap({
           weight: isSelected ? 2.5 : 1,
           opacity: 1,
           color: isSelected ? "#ffffff" : "#09131d",
-          fillOpacity: isSelected ? 0.92 : 0.78,
+          fillOpacity: isSelected ? 0.95 : 0.88,
         };
       };
 
@@ -113,7 +112,7 @@ export default function JabarMap({
               <span>Tingkat Parah: <b>${stat?.p2_terkini?.toFixed(3) ?? "-"}</b></span> •
               <span>Miskin: <b>${stat?.penduduk_miskin_k ?? "-"} rb</b></span>
             </div>`,
-            { sticky: true }
+            { sticky: true },
           );
 
           layer.on({
@@ -122,7 +121,7 @@ export default function JabarMap({
               onSelectRegion?.(stat || { kode, nama });
             },
             mouseover: (e) => {
-              e.target.setStyle({ fillOpacity: 0.95, weight: 2 });
+              e.target.setStyle({ fillOpacity: 1, weight: 2 });
             },
             mouseout: (e) => {
               e.target.setStyle(getStyle(feature));
@@ -130,30 +129,51 @@ export default function JabarMap({
           });
         },
       }).addTo(map);
+
+      if (shouldFitBounds) {
+        map.invalidateSize();
+        map.fitBounds(geoLayerRef.current.getBounds(), { padding: [8, 8] });
+      }
     };
 
     if (geoDataRef.current) {
-      renderGeoJson(geoDataRef.current);
+      renderGeoJson(geoDataRef.current, false);
     } else {
       fetch("/jabar.geojson")
         .then((res) => res.json())
         .then((data) => {
           geoDataRef.current = data;
-          renderGeoJson(data);
+          renderGeoJson(data, true);
         })
         .catch((err) => console.error("Gagal memuat /jabar.geojson:", err));
     }
   }, [regionStats, selectedRegion, metric]);
 
   return (
-    <div className="relative h-[380px] w-full">
+    <div
+      className="relative h-[400px] w-full"
+      style={{ background: "transparent" }}
+    >
       <style>{`
+        .leaflet-container,
+        .leaflet-pane,
+        .leaflet-map-pane {
+          background: transparent !important;
+          cursor: default !important;
+        }
+        .leaflet-container path.leaflet-interactive {
+          cursor: pointer !important;
+        }
         .leaflet-container path.leaflet-interactive:focus,
         .leaflet-container svg:focus {
           outline: none !important;
         }
       `}</style>
-      <div ref={mapContainerRef} className="h-full w-full z-0" />
+      <div
+        ref={mapContainerRef}
+        className="h-full w-full z-0"
+        style={{ background: "transparent" }}
+      />
     </div>
   );
 }

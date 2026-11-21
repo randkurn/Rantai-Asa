@@ -60,8 +60,17 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+header[data-navbar-state="top"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 h1,
@@ -92,16 +101,33 @@ h3,
   color: var(--text-muted) !important;
 }
 
+.hero-section,
+.hero-section * {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-section :is(p, small, span, b) {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+:root[data-theme="light"] .hero-section .text-white,
+:root[data-theme="light"] .hero-section .text-slate-300,
+:root[data-theme="light"] .hero-section .text-sky-100 {
+  color: #f8fafc !important;
+}
+
+:root[data-theme="light"] .hero-section .bg-\[\#050f18\]\/85,
+:root[data-theme="light"] .hero-section .bg-\[\#07131d\] {
+  background-color: #050f18 !important;
+}
+
 :root[data-theme="light"] .border-\[rgba\(71\,158\,206\,0\.18\)\],
 :root[data-theme="light"] .border-\[rgba\(71\,158\,206\,0\.28\)\],
 :root[data-theme="light"] .border-sky-400\/20 {
   border-color: var(--card-border) !important;
 }
 
-:root[data-theme="light"] header {
-  background: var(--bg-nav) !important;
-  border-bottom-color: var(--card-border) !important;
-}
 
 /* ───────────────────────────────────────────
    SCROLLBAR

@@ -141,7 +141,7 @@ export default function App() {
   const { data: reportCounts } = useReportsByRegion();
 
   const [activeTab, setActiveTab] = useState("home");
-  const [mapMetric, setMapMetric] = useState("p2");
+  const [mapMetric, setMapMetric] = useState("poor");
   const [selectedRegionCode, setSelectedRegionCode] = useState("3201");
   const [aiModelVersion, setAiModelVersion] = useState("lr-jabar-multidim-2.0");
   const [selectedTxForModal, setSelectedTxForModal] = useState(null);

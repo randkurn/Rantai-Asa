@@ -1,89 +1,139 @@
 import React from "react";
 
+const BENEFITS = [
+  "Langsung menolak jika ada orang yang mendaftar bantuan dua kali di periode yang sama",
+  "Menilai kelayakan penerima secara adil berdasarkan 14 kondisi ekonomi & rumah warga Jawa Barat",
+  "Semua bukti penyaluran bisa dicek langsung oleh masyarakat tanpa perlu mendaftar akun",
+  "Nomor KTP (NIK) warga disamarkan menjadi kode acak agar data pribadi tetap aman",
+];
+
+const FEATURES = [
+  {
+    title: "Satu Nama Satu Bantuan",
+    desc: "Sistem otomatis mengunci data penerima yang sudah cair, sehingga tidak bisa diajukan lagi pada periode yang sama.",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"
+      />
+    ),
+  },
+  {
+    title: "Bisa Diawasi Bersama",
+    desc: "Warga, relawan, maupun media bisa ikut memantau setiap bantuan yang keluar kapan saja tanpa perlu izin khusus.",
+    icon: (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"
+        />
+      </>
+    ),
+  },
+  {
+    title: "Bantuan Tepat Sasaran",
+    desc: "Mengukur 14 kondisi nyata keluarga kurang mampu di Jawa Barat agar bantuan benar-benar jatuh ke yang membutuhkan.",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 19V9M10 19V5M16 19v-8M22 19H2"
+      />
+    ),
+  },
+  {
+    title: "Catatan Tidak Bisa Diubah",
+    desc: "Sekali bantuan tercatat cair, datanya terkunci permanen dan tidak bisa dihapus atau diedit diam-diam oleh siapa pun.",
+    icon: (
+      <>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+        <circle cx="12" cy="12" r="9" />
+      </>
+    ),
+  },
+];
+
 export default function AboutSection({ aiModelVersion }) {
   return (
-    <section id="tentang" className="py-20 px-4">
-      <div className="max-w-[1080px] mx-auto">
-        <div className="text-center max-w-[680px] mx-auto mb-12">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(71,158,206,0.14)] border border-[rgba(71,158,206,0.28)] text-xs text-[#d6ecf8]">
+    <section id="tentang" className="px-4 py-20">
+      <div className="mx-auto max-w-5xl">
+        {/* Header */}
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs">
             Tentang RantaiAsa
           </span>
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-white mt-3.5 mb-2.5 leading-tight">
-            Bukti publik bahwa bantuan <em className="text-[#479ece] not-italic">sampai sekali</em> ke orang yang tepat
+          <h2 className="font-heading mt-3.5 mb-2.5 text-3xl font-bold leading-tight text-white sm:text-4xl">
+            Memastikan bantuan{" "}
+            <em className="not-italic text-[#479ece]">cair sekali</em> ke
+            keluarga yang benar-benar berhak
           </h2>
-          <p className="text-[#9fb8c9] text-sm leading-relaxed">
-            Setiap penyaluran tercatat di blockchain Polygon Amoy. Siapa pun bisa memeriksanya tanpa izin dan tanpa login.
+          <p className="text-sm leading-relaxed text-slate-300">
+            Setiap bantuan yang disalurkan tercatat rapi di papan pengumuman
+            yang terkunci permanen. Siapa saja bisa mengeceknya tanpa perlu
+            login.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-5 space-y-4 text-sm text-[#9fb8c9] leading-relaxed">
-            <h3 className="font-heading font-bold text-xl text-white">Mengapa perlu lapisan audit independen?</h3>
+        {/* Konten Utama */}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          {/* Penjelasan Kiri */}
+          <div className="space-y-4 text-sm leading-relaxed text-slate-300 lg:col-span-5">
+            <h3 className="font-heading text-xl font-bold text-white">
+              Kenapa penyaluran bansos perlu diawasi bersama?
+            </h3>
             <p>
-              Pada 2021 Kemensos menonaktifkan 21.000.156 data ganda DTKS. Data terpusat rentan diubah oleh pemegang hak tulis. RantaiAsa mengamankan hash NIK secara terdesentralisasi, bukan NIK mentah, sehingga duplikasi langsung ditolak oleh kontrak pintar secara matematis.
+              <p>
+                Pada tahun 2021, Kementerian Sosial menemukan lebih dari{" "}
+                <strong>
+                  21 juta data penerima yang masuk lebih dari satu kali
+                </strong>
+                . Sistem biasa masih bisa diakali dengan memasukkan nama yang
+                sama. Di RantaiAsa, nomor KTP disamarkan menjadi kode permanen
+                agar bantuan tidak pernah cair dua kali ke orang yang sama.
+              </p>
             </p>
+
             <ul className="space-y-2.5 pt-2 text-xs text-white">
-              <li className="flex items-center gap-2.5">
-                <span className="w-4 h-4 rounded-full border border-[#479ece] text-[#479ece] flex items-center justify-center text-[10px] shrink-0 font-bold">✓</span>
-                <span>Duplikasi ditolak otomatis oleh IdentityRegistry.sol</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="w-4 h-4 rounded-full border border-[#479ece] text-[#479ece] flex items-center justify-center text-[10px] shrink-0 font-bold">✓</span>
-                <span>Skor kelayakan AI multidimensi BPS Jawa Barat ({aiModelVersion})</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="w-4 h-4 rounded-full border border-[#479ece] text-[#479ece] flex items-center justify-center text-[10px] shrink-0 font-bold">✓</span>
-                <span>Setiap transaksi bisa dicek di block explorer secara independen</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <span className="w-4 h-4 rounded-full border border-[#479ece] text-[#479ece] flex items-center justify-center text-[10px] shrink-0 font-bold">✓</span>
-                <span>Zero raw NIK di blockchain (HMAC-SHA256 volatile memory)</span>
-              </li>
+              {BENEFITS.map((item) => (
+                <li key={item} className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-[#479ece] text-[10px] font-bold text-[#479ece]">
+                    ✓
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-white/[0.04] border border-[rgba(71,158,206,0.18)] shadow-lg hover:border-[#479ece]/50 transition">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] flex items-center justify-center text-white mb-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" />
-                </svg>
+          {/* 4 Kartu Fitur Kanan */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-7">
+            {FEATURES.map((feat) => (
+              <div
+                key={feat.title}
+                className="rounded-2xl border border-sky-400/20 bg-white/[0.04] p-5 shadow-lg transition hover:border-sky-400/50"
+              >
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] text-white">
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    {feat.icon}
+                  </svg>
+                </div>
+                <h3 className="font-heading text-base font-bold text-white">
+                  {feat.title}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                  {feat.desc}
+                </p>
               </div>
-              <h3 className="font-heading font-bold text-base text-white">Anti-duplikasi</h3>
-              <p className="text-xs text-[#9fb8c9] mt-1">Hash NIK yang sama ditolak oleh smart contract bila terdaftar pada periode berjalan.</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white/[0.04] border border-[rgba(71,158,206,0.18)] shadow-lg hover:border-[#479ece]/50 transition">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] flex items-center justify-center text-white mb-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="3" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" />
-                </svg>
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">Transparan</h3>
-              <p className="text-xs text-[#9fb8c9] mt-1">Ledger terbuka untuk warga, LSM, jurnalis investigasi, dan Ombudsman RI tanpa izin khusus.</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white/[0.04] border border-[rgba(71,158,206,0.18)] shadow-lg hover:border-[#479ece]/50 transition">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] flex items-center justify-center text-white mb-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 19V9M10 19V5M16 19v-8M22 19H2" />
-                </svg>
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">Skor AI Multidimensi</h3>
-              <p className="text-xs text-[#9fb8c9] mt-1">14 Indikator kemiskinan multidimensi BPS Jabar menentukan kelayakan (Ambang batas ≥ 60).</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white/[0.04] border border-[rgba(71,158,206,0.18)] shadow-lg hover:border-[#479ece]/50 transition">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#479ece] to-[#2c7fb0] flex items-center justify-center text-white mb-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
-                  <circle cx="12" cy="12" r="9" />
-                </svg>
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">Tak Bisa Diubah</h3>
-              <p className="text-xs text-[#9fb8c9] mt-1">Koreksi hanya dapat dilakukan lewat transaksi baru on-chain yang ikut terekam abadi.</p>
-            </div>
+            ))}
           </div>
         </div>
       </div>
