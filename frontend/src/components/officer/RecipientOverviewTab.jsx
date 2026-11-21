@@ -25,18 +25,11 @@ export default function RecipientOverviewTab({
   return (
     <div className="space-y-6">
       {/* 4 Kartu Ringkasan */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <span className="text-xs text-slate-500">Penerima Lolos</span>
           <div className="font-heading mt-1.5 text-2xl font-bold text-slate-900">
             {lolosCount.toLocaleString("id-ID")} Warga
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="text-xs text-slate-500">Sudah Cair</span>
-          <div className="font-heading mt-1.5 text-2xl font-bold text-sky-600">
-            {cairList.length} Paket
           </div>
         </div>
 
@@ -50,7 +43,7 @@ export default function RecipientOverviewTab({
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <span className="text-xs text-slate-500">Sistem Penilai</span>
           <div className="font-heading mt-1.5 text-2xl font-bold text-emerald-600">
-            Aktif (BPS)
+            14 Indikator
           </div>
         </div>
       </div>
@@ -84,7 +77,7 @@ export default function RecipientOverviewTab({
 
             <button
               onClick={onOpenRegister}
-              className="cursor-pointer whitespace-nowrap rounded-xl bg-sky-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-sky-700"
+              className="cursor-pointer whitespace-nowrap rounded-xl bg-sky-600 px-4 py-1.5 text-xs font-semibold !text-white hover:bg-sky-700"
             >
               + Tambah Warga
             </button>

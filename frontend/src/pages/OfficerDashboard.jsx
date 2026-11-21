@@ -11,80 +11,15 @@ import OperationalStepsTab from "../components/officer/OperationalStepsTab.jsx";
 import AuditTransparencyTab from "../components/officer/AuditTransparencyTab.jsx";
 import OfficerAccountTab from "../components/officer/OfficerAccountTab.jsx";
 
-const INITIAL_RECIPIENTS = [
-  {
-    id: "RCP-3201-101",
-    nikMasked: "320101******0005",
-    identityHash:
-      "0x7d91c4e28b30a6f194c82d7e51a039b4f6c28e10d5a73b94c1f08e26a4d91b3c",
-    regionCode: "3201",
-    regionName: "Kabupaten Bogor",
-    program: "PKH-2026-P1",
-    aiScore: 92,
-    aiStatus: "LAYAK",
-    status: "TERCATAT_BLOCKCHAIN",
-    amount: 750000,
-    timestamp: "21 Nov 2026 10:14 WIB",
-    txHash:
-      "0x3b8f19c2a4d7e60581b9c3f4a2e8d1097c4b5a6f8e2d1c3b4a59687766554433",
-  },
-  {
-    id: "RCP-3203-102",
-    nikMasked: "320305******0012",
-    identityHash:
-      "0x4e1a7c93d2b8f504a619e832c70d5b2f9a4183e6c0b29d74f1a85c30e6b92d47",
-    regionCode: "3203",
-    regionName: "Kabupaten Cianjur",
-    program: "BPNT-2026-P1",
-    aiScore: 84,
-    aiStatus: "LAYAK",
-    status: "TERCATAT_BLOCKCHAIN",
-    amount: 600000,
-    timestamp: "21 Nov 2026 09:40 WIB",
-    txHash:
-      "0x7a1c44e9b2d8f30692c1a5e7b3d9f0184e6c7b8a9d0e1f2a3b4c5d6e7f8091a2",
-  },
-  {
-    id: "RCP-3205-103",
-    nikMasked: "320512******0089",
-    identityHash:
-      "0x1d8b5f20c9a4e736b108d492f63a8c1e5b7092d4a8f16c35e9b07d24a6c81f53",
-    regionCode: "3205",
-    regionName: "Kabupaten Garut",
-    program: "PKH-2026-P1",
-    aiScore: 78,
-    aiStatus: "LAYAK",
-    status: "SIAP_SALUR",
-    amount: 750000,
-    timestamp: "21 Nov 2026 08:30 WIB",
-    txHash: "-",
-  },
-  {
-    id: "RCP-3273-104",
-    nikMasked: "327301******0044",
-    identityHash:
-      "0x98bca410293847afbd7810398402948cba019283748293840192837461928374",
-    regionCode: "3273",
-    regionName: "Kota Bandung",
-    program: "PKH-2026-P1",
-    aiScore: 35,
-    aiStatus: "TIDAK_LAYAK",
-    status: "DITOLAK_SISTEM",
-    amount: 0,
-    timestamp: "20 Nov 2026 16:20 WIB",
-    txHash: "-",
-  },
-];
-
 export default function OfficerDashboard() {
-  const { officer, logout } = useAuth();
+  const { officer, token, logout } = useAuth();
   const navigate = useNavigate();
 
   const [activeMenu, setActiveMenu] = useState("data-penerima");
-  const [recipientList, setRecipientList] = useState(INITIAL_RECIPIENTS);
+  const [recipientList, setRecipientList] = useState([]);
 
   // State Pendaftaran & Verifikasi
-  const [nikInput, setNikInput] = useState("3201012304920005");
+  const [nikInput, setNikInput] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("PKH-2026-P1");
   const [selectedRegion, setSelectedRegion] = useState(
     officer?.assignedRegion || "3201",
@@ -122,6 +57,38 @@ export default function OfficerDashboard() {
   const [isScoring, setIsScoring] = useState(false);
   const [disburseNotification, setDisburseNotification] = useState(null);
 
+  useEffect(() => {
+    if (!token) return;
+    const loadRecipients = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/recipients", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) return;
+        const rows = await response.json();
+        setRecipientList(rows.map((row) => ({
+          id: row.ref_code,
+          nikMasked: "************" + String(row.ref_code).slice(-4),
+          identityHash: row.identity_hash,
+          regionCode: row.region_code,
+          regionName: REGION_NAMES[parseInt(row.region_code)] || "Jawa Barat",
+          program: row.program,
+          aiScore: row.score ?? 0,
+          aiStatus: row.label || "BELUM_DINILAI",
+          status: row.disbursement_status === "DISBURSED"
+            ? "TERCATAT_BLOCKCHAIN"
+            : "SIAP_SALUR",
+          amount: Number(row.disbursement_amount || 0),
+          timestamp: new Date(row.disbursement_created_at || row.created_at).toLocaleString("id-ID") + " WIB",
+          txHash: row.disbursement_tx_hash || "-",
+        })));
+      } catch (error) {
+        console.error("Gagal memuat penerima:", error);
+      }
+    };
+    loadRecipients();
+  }, [token]);
+
   // Hitung Skor AI secara Real-Time
   useEffect(() => {
     let active = true;
@@ -145,7 +112,7 @@ export default function OfficerDashboard() {
           },
         };
 
-        const res = await fetch("http://localhost:8000/score", {
+        const res = await fetch("http://localhost:4000/public/score-simulasi", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -159,24 +126,21 @@ export default function OfficerDashboard() {
             factors: data.top_factors || [],
             modelVersion: data.model_version || "lr-jabar-multidim-2.0",
           });
+        } else if (active) {
+          setAiScoreResult({
+            score: 0,
+            label: "TIDAK_LAYAK",
+            factors: [],
+            modelVersion: "AI_UNAVAILABLE",
+          });
         }
       } catch {
         if (active) {
-          let calcScore = 80;
-          if (aiForm.is_civil_servant_or_security) calcScore = 2;
-          else {
-            if (Number(aiForm.income_per_capita_band) === 1) calcScore += 12;
-            if (aiForm.head_unemployed) calcScore += 8;
-            if (aiForm.has_disabled_or_elderly) calcScore += 5;
-          }
           setAiScoreResult({
-            score: Math.min(100, Math.max(1, calcScore)),
-            label: calcScore >= 60 ? "LAYAK" : "TIDAK_LAYAK",
-            factors: [
-              { name: "Pita Pengeluaran Rendah", impact: "+" },
-              { name: "Beban Keluarga & Anggota Rentan", impact: "+" },
-            ],
-            modelVersion: "lr-jabar-multidim-2.0",
+            score: 0,
+            label: "TIDAK_LAYAK",
+            factors: [],
+            modelVersion: "AI_UNAVAILABLE",
           });
         }
       } finally {
@@ -231,7 +195,7 @@ export default function OfficerDashboard() {
   };
 
   // Cek Penerima Ganda
-  const handleVerifyDuplicate = () => {
+  const handleVerifyDuplicate = async () => {
     if (!pseudonymHash) {
       setVerificationFeedback({
         status: "ERROR",
@@ -240,55 +204,149 @@ export default function OfficerDashboard() {
       return;
     }
 
-    const isDup = recipientList.some(
-      (r) => r.identityHash.toLowerCase() === pseudonymHash.toLowerCase(),
-    );
-
-    if (isDup) {
-      setVerificationFeedback({
-        status: "DUPLICATE",
-        message:
-          "PERINGATAN PENERIMA GANDA: Warga ini sudah pernah menerima bantuan pada periode berjalan. Penyaluran baru otomatis diblokir sistem.",
+    try {
+      const token = localStorage.getItem("rantaiasa_officer_token") || "";
+      const response = await fetch("http://localhost:4000/recipients/check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          identityHash: pseudonymHash,
+          periodId: 202611,
+        }),
       });
-    } else {
+      if (response.ok) {
+        const data = await response.json();
+        if (data.duplicate) {
+          setVerificationFeedback({
+            status: "DUPLICATE",
+            message: "PERINGATAN PENERIMA GANDA: Warga ini sudah pernah menerima bantuan pada periode berjalan.",
+          });
+        } else {
+          setVerificationFeedback({
+            status: "VALID",
+            message: "IDENTITAS AMAN: Data unik dan belum pernah menerima bantuan pada periode ini.",
+          });
+        }
+      } else {
+        const data = await response.json();
+        throw new Error(data.detail || "Pengecekan penerima gagal.");
+      }
+    } catch (error) {
       setVerificationFeedback({
-        status: "VALID",
-        message:
-          "IDENTITAS AMAN: Data unik dan belum pernah menerima bantuan pada periode ini. Lanjutkan proses penilaian.",
+        status: "ERROR",
+        message: error.message,
       });
     }
   };
 
   // Eksekusi Pencatatan Penyaluran
-  const handleExecuteDisbursement = () => {
+  const handleExecuteDisbursement = async () => {
     if (!pseudonymHash || aiScoreResult.score < 60) return;
 
-    const alreadyReceived = recipientList.some(
-      (r) =>
-        r.identityHash.toLowerCase() === pseudonymHash.toLowerCase() &&
-        r.status === "TERCATAT_BLOCKCHAIN",
-    );
-
-    if (alreadyReceived) {
-      setVerificationFeedback({
-        status: "DUPLICATE",
-        message:
-          "Penyaluran dibatalkan: Kode identitas ini sudah tercatat menerima bantuan pada periode berjalan.",
-      });
-      setActiveMenu("verifikasi");
-      return;
-    }
-
-    const randHex = Array.from({ length: 64 }, () =>
-      Math.floor(Math.random() * 16).toString(16),
-    ).join("");
-    const newTx = "0x" + randHex;
+    const newTx = null;
     const newRefId = `RCP-${selectedRegion}-0${recipientList.length + 101}`;
     const amt = selectedProgram.startsWith("PKH")
       ? 750000
       : selectedProgram.startsWith("BPNT")
         ? 600000
         : 300000;
+
+    try {
+      const token = localStorage.getItem("rantaiasa_officer_token") || "";
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const checkResponse = await fetch("http://localhost:4000/recipients/check", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ identityHash: pseudonymHash, periodId: 202611 }),
+      });
+      if (checkResponse.ok) {
+        const checkData = await checkResponse.json();
+        if (checkData.duplicate) throw new Error("DUPLICATE");
+      } else {
+        const error = await checkResponse.json();
+        throw new Error(error.detail || "Pengecekan penerima gagal.");
+      }
+
+      const programId = selectedProgram.startsWith("PKH")
+        ? 1
+        : selectedProgram.startsWith("BPNT")
+          ? 2
+          : 3;
+      const recipientResponse = await fetch("http://localhost:4000/recipients", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          refCode: newRefId,
+          identityHash: pseudonymHash,
+          regTxHash: newTx,
+          programId,
+          periodId: 202611,
+          regionCode: selectedRegion,
+        }),
+      });
+      if (!recipientResponse.ok) {
+        const error = await recipientResponse.json();
+        throw new Error(error.error === "DUPLICATE" ? "DUPLICATE" : "RECIPIENT_SAVE_FAILED");
+      }
+
+      const assessmentResponse = await fetch("http://localhost:4000/assessments", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          identityHash: pseudonymHash,
+          refCode: newRefId,
+          periodId: 202611,
+          features: {
+            kode_kabupaten_kota: parseInt(selectedRegion),
+            household_size: Number(aiForm.household_size),
+            income_per_capita_band: Number(aiForm.income_per_capita_band),
+            head_education_level: Number(aiForm.head_education_level),
+            housing_quality: Number(aiForm.housing_quality),
+            has_disabled_or_elderly: aiForm.has_disabled_or_elderly ? 1 : 0,
+            is_civil_servant_or_security: aiForm.is_civil_servant_or_security ? 1 : 0,
+            land_ownership: aiForm.land_ownership ? 1 : 0,
+            has_bpjs: aiForm.has_bpjs ? 1 : 0,
+            head_unemployed: aiForm.head_unemployed ? 1 : 0,
+          },
+        }),
+      });
+      if (!assessmentResponse.ok) throw new Error("ASSESSMENT_SAVE_FAILED");
+
+      const disbursementResponse = await fetch("http://localhost:4000/disbursements", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          refCode: newRefId,
+          txHash: newTx,
+          amount: amt,
+          programId,
+          periodId: 202611,
+        }),
+      });
+      if (!disbursementResponse.ok) throw new Error("DISBURSEMENT_SAVE_FAILED");
+    } catch (error) {
+      if (error.message === "DUPLICATE") {
+        setVerificationFeedback({
+          status: "DUPLICATE",
+          message:
+            "Penyaluran dibatalkan: Kode identitas ini sudah tercatat menerima bantuan pada periode berjalan.",
+        });
+        setActiveMenu("verifikasi");
+        return;
+      }
+      setDisburseNotification({
+        refId: "GAGAL",
+        txHash: error.message,
+        amount: 0,
+      });
+      return;
+    }
 
     const newRecipient = {
       id: newRefId,
@@ -374,28 +432,30 @@ export default function OfficerDashboard() {
             />
           )}
 
-          <OperationalStepsTab
-            activeMenu={activeMenu}
-            setActiveMenu={setActiveMenu}
-            nikInput={nikInput}
-            setNikInput={setNikInput}
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            selectedProgram={selectedProgram}
-            setSelectedProgram={setSelectedProgram}
-            isHashing={isHashing}
-            handleGeneratePseudonym={handleGeneratePseudonym}
-            pseudonymHash={pseudonymHash}
-            setPseudonymHash={setPseudonymHash}
-            handleVerifyDuplicate={handleVerifyDuplicate}
-            verificationFeedback={verificationFeedback}
-            aiForm={aiForm}
-            setAiForm={setAiForm}
-            isScoring={isScoring}
-            aiScoreResult={aiScoreResult}
-            officer={officer}
-            handleExecuteDisbursement={handleExecuteDisbursement}
-          />
+          {activeMenu === "registrasi" && (
+            <OperationalStepsTab
+              activeMenu={activeMenu}
+              setActiveMenu={setActiveMenu}
+              nikInput={nikInput}
+              setNikInput={setNikInput}
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedProgram={selectedProgram}
+              setSelectedProgram={setSelectedProgram}
+              isHashing={isHashing}
+              handleGeneratePseudonym={handleGeneratePseudonym}
+              pseudonymHash={pseudonymHash}
+              setPseudonymHash={setPseudonymHash}
+              handleVerifyDuplicate={handleVerifyDuplicate}
+              verificationFeedback={verificationFeedback}
+              aiForm={aiForm}
+              setAiForm={setAiForm}
+              isScoring={isScoring}
+              aiScoreResult={aiScoreResult}
+              officer={officer}
+              handleExecuteDisbursement={handleExecuteDisbursement}
+            />
+          )}
 
           <AuditTransparencyTab
             activeMenu={activeMenu}
@@ -407,6 +467,7 @@ export default function OfficerDashboard() {
           <OfficerAccountTab
             activeMenu={activeMenu}
             officer={officer}
+            token={token}
             onLogout={handleLogout}
           />
         </main>

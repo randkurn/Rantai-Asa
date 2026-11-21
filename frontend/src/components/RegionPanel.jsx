@@ -32,7 +32,7 @@ export default function RegionPanel({ region, onClose }) {
       <div className="mt-3 pt-3 border-t border-slate-100">
         <p className="text-xs text-slate-400 italic">
           P2 = Indeks Keparahan Kemiskinan (data nyata BPS Jawa Barat).<br />
-          Registrasi & penyaluran: SIMULASI.
+          Registrasi & penyaluran: data database.
         </p>
       </div>
     </div>

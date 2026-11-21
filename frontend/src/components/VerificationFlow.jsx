@@ -99,7 +99,7 @@ export default function VerificationFlow({
               </div>
 
               <div className="rounded-2xl border border-[rgba(71,158,206,0.18)] bg-white/[0.04] p-4 text-center">
-                <b className="font-heading block text-2xl font-extrabold text-[#5fd7a0] sm:text-3xl">
+                <b className="font-heading block text-2xl font-extrabold text-[#479ece] sm:text-3xl">
                   {totalDisbursed.toLocaleString("id-ID")}
                 </b>
                 <span className="mt-1 block text-xs text-[#9fb8c9]">

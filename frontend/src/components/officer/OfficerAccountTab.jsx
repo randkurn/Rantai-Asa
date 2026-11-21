@@ -1,29 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const CONNECTED_CONTRACTS = [
-  {
-    label: "1. Pendaftaran Identitas (IdentityRegistry):",
-    short: "0x964C...dD84",
-    address: "0x964C5ACaEf0FFb0866bb0a0EFF55cA87BF39dD84",
-  },
-  {
-    label: "2. Penyaluran Bantuan (AidDisbursement):",
-    short: "0xDd9E...859D",
-    address: "0xDd9E6cffA4DEB9493D6406A839480673Af13859D",
-  },
-  {
-    label: "3. Laporan Aduan Warga (ReportRegistry):",
-    short: "0x8b6a...291d",
-    address: "0x8b6aEf6e43B5e028af2d1b606Ec2Ee14837D291d",
-  },
-];
-
-export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
+export default function OfficerAccountTab({ activeMenu, officer, token, onLogout }) {
   const [isSwitchingNetwork, setIsSwitchingNetwork] = useState(false);
   const [copiedWallet, setCopiedWallet] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [network, setNetwork] = useState(null);
+  const [contracts, setContracts] = useState(null);
 
-  const walletAddress =
-    officer?.wallet || "0xDebE39681c91F60C010d7C66e443770cf85dF3bf";
+  useEffect(() => {
+    if (!token) return;
+    fetch("http://localhost:4000/officer/stats", {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then(r => r.ok ? r.json() : null).then(setStats).catch(() => setStats(null));
+  }, [token]);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/public/network")
+      .then(r => r.json())
+      .then(setNetwork)
+      .catch(() => setNetwork({ connected: false, chain_id: 80002, block_number: null, latency_ms: null }));
+    fetch("http://localhost:4000/public/contracts")
+      .then(r => r.ok ? r.json() : null)
+      .then(setContracts)
+      .catch(() => setContracts(null));
+  }, []);
+
+  const walletAddress = officer?.wallet || "";
 
   const handleCopyWallet = () => {
     navigator.clipboard.writeText(walletAddress);
@@ -45,17 +47,17 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="font-heading text-lg font-bold text-slate-900">
-                      {officer?.name || "Budi Santoso, S.STP"}
+                      {officer?.name || "-"}
                     </h2>
                     <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                       ASN Aktif
                     </span>
                   </div>
                   <p className="mt-0.5 text-xs text-slate-500">
-                    {officer?.department || "Dinas Sosial Provinsi Jawa Barat"}
+                    {officer?.department || "-"}
                   </p>
                   <p className="font-mono text-[11px] text-slate-400">
-                    NIP: {officer?.nip || "19880415 201201 1 002"}
+                    NIP: {officer?.nip || "-"}
                   </p>
                 </div>
               </div>
@@ -65,10 +67,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                   Surat Keputusan (SK) Tugas
                 </span>
                 <strong className="block text-xs font-semibold text-slate-800">
-                  460/Kep.128-Dinsos/2026
+                  Tidak tersedia
                 </strong>
                 <span className="text-[10px] font-medium text-sky-600">
-                  Berlaku s.d. 31 Des 2026
+                  Status kepegawaian terverifikasi
                 </span>
               </div>
             </div>
@@ -80,10 +82,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                   Warga Diverifikasi
                 </span>
                 <strong className="font-heading mt-1 block text-2xl font-bold text-slate-900">
-                  48
+                  {stats?.recipients_verified ?? 0}
                 </strong>
                 <span className="text-[10px] font-medium text-emerald-600">
-                  ↑ 12 keluarga minggu ini
+                  Dari database penerima
                 </span>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
@@ -91,10 +93,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                   Penyaluran Disahkan
                 </span>
                 <strong className="font-heading mt-1 block text-2xl font-bold text-sky-600">
-                  36
+                  {stats?.disbursements ?? 0}
                 </strong>
                 <span className="text-[10px] text-slate-500">
-                  Total Rp 27.000.000,-
+                  Total Rp {(stats?.disbursed_amount ?? 0).toLocaleString("id-ID")}
                 </span>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
@@ -102,10 +104,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                   Aduan Warga Ditangani
                 </span>
                 <strong className="font-heading mt-1 block text-2xl font-bold text-slate-900">
-                  4
+                  {stats?.reports_handled ?? 0}
                 </strong>
                 <span className="text-[10px] font-medium text-emerald-600">
-                  100% selesai ditindaklanjuti
+                  Ditangani melalui akun petugas
                 </span>
               </div>
             </div>
@@ -119,19 +121,19 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                 <div className="flex justify-between border-b border-slate-200/80 py-1">
                   <span className="text-slate-500">Jabatan:</span>
                   <span className="font-semibold text-slate-800">
-                    Verifikator Bantuan Sosial Madya
+                    {officer?.role || "-"}
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200/80 py-1">
                   <span className="text-slate-500">Pangkat/Golongan:</span>
                   <span className="font-semibold text-slate-800">
-                    Penata Muda Tk. I (III/b)
+                    Tidak tersedia
                   </span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-slate-500">Unit Satuan Kerja:</span>
                   <span className="font-semibold text-slate-800">
-                    Bidang Perlindungan &amp; Jaminan Sosial
+                    {officer?.department || "-"}
                   </span>
                 </div>
               </div>
@@ -143,19 +145,19 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                 <div className="flex justify-between border-b border-slate-200/80 py-1">
                   <span className="text-slate-500">Wilayah Induk:</span>
                   <span className="font-semibold text-slate-800">
-                    Kabupaten Bogor (Kode 3201)
+                    Wilayah kode {officer?.assignedRegion || "-"}
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-slate-200/80 py-1">
                   <span className="text-slate-500">Kecamatan Prioritas:</span>
                   <span className="font-semibold text-slate-800">
-                    Cibinong, Citeureup, Sukaraja
+                    Tidak tersedia
                   </span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-slate-500">Posko Lapangan:</span>
                   <span className="font-semibold text-slate-800">
-                    Kantor Dinsos Kab. Bogor Jl. Bersih No. 1
+                    Tidak tersedia
                   </span>
                 </div>
               </div>
@@ -211,7 +213,7 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-                Node Terhubung (Online)
+                {network?.connected ? "Node Terhubung (Online)" : "Node Tidak Terhubung"}
               </span>
             </div>
 
@@ -223,7 +225,7 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                     Jaringan Aktif
                   </span>
                   <strong className="mt-1 block text-xs font-bold text-slate-800">
-                    Polygon Amoy (80002)
+                    Polygon Amoy ({network?.chain_id ?? "-"})
                   </strong>
                   <span className="text-[10px] text-slate-400">
                     Layer-2 Ethereum Testnet
@@ -234,10 +236,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                     Latensi Node RPC
                   </span>
                   <strong className="mt-1 block text-xs font-bold text-emerald-700">
-                    98 ms (Sangat Cepat)
+                    {network?.latency_ms != null ? `${network.latency_ms} ms` : "Tidak tersedia"}
                   </strong>
                   <span className="text-[10px] text-emerald-600">
-                    Sinkron blok #18,452,910
+                    {network?.block_number != null ? `Sinkron blok #${network.block_number}` : "Nomor blok tidak tersedia"}
                   </span>
                 </div>
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
@@ -245,10 +247,10 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                     Biaya Transaksi Petugas
                   </span>
                   <strong className="mt-1 block text-xs font-bold text-sky-700">
-                    Gratis (Disubsidi APBD)
+                    Tidak dipantau
                   </strong>
                   <span className="text-[10px] text-slate-400">
-                    Paymaster Relayer Pemprov
+                    Tidak tersedia
                   </span>
                 </div>
               </div>
@@ -293,11 +295,15 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                   Kontrak Pintar Resmi Terpasang
                 </span>
                 <div className="space-y-1.5 font-mono text-[11px]">
-                  {CONNECTED_CONTRACTS.map((item, index) => (
+                  {(contracts ? [
+                    { label: "IdentityRegistry:", address: contracts.contracts.identity_registry },
+                    { label: "AidDisbursement:", address: contracts.contracts.aid_disbursement },
+                    { label: "ReportRegistry:", address: contracts.contracts.report_registry },
+                  ] : []).map((item, index, items) => (
                     <div
                       key={item.address}
                       className={`flex items-center justify-between py-1.5 ${
-                        index < CONNECTED_CONTRACTS.length - 1
+                        index < items.length - 1
                           ? "border-b border-slate-100"
                           : ""
                       }`}
@@ -311,7 +317,7 @@ export default function OfficerAccountTab({ activeMenu, officer, onLogout }) {
                         rel="noreferrer"
                         className="text-sky-600 hover:underline"
                       >
-                        {item.short} ↗
+                        {item.address.slice(0, 8)}...{item.address.slice(-4)} ↗
                       </a>
                     </div>
                   ))}

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
-const AI  = import.meta.env.VITE_AI_URL  || "http://localhost:8000";
 
 // Hook: ambil stats per wilayah dari backend /public/stats-by-region
 export function useRegionStats() {
@@ -19,24 +18,7 @@ export function useRegionStats() {
       setData(j.data || []);
       setLastUpdated(j.generated_at);
     } catch (e) {
-      // Fallback: langsung ke ai-engine /regions
-      try {
-        const r2 = await fetch(`${AI}/regions`);
-        if (!r2.ok) throw new Error(`HTTP ${r2.status}`);
-        const regions = await r2.json();
-        setData(regions.map(reg => ({
-          kode: reg.kode_kabupaten_kota,
-          nama: reg.nama || reg.nama_kabupaten_kota || "",
-          p2_terkini: reg.regional_severity ?? reg.p2_latest ?? 0,
-          p1_terkini: reg.regional_depth ?? 0,
-          tren: reg.regional_trend ?? reg.trend_3yr ?? 0,
-          garis_kemiskinan_k: reg.poverty_line_k ?? 0,
-          penduduk_miskin_k: reg.poor_count_k ?? 0,
-          tahun_data: reg.tahun_data ?? 2025,
-          registrasi: 0, penyaluran: 0, laporan_verified: 0
-        })));
-        setLastUpdated(new Date().toISOString());
-      } catch (e2) { setError(e2.message); }
+      setError(e.message);
     }
     setLoading(false);
   }, []);

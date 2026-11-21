@@ -1,13 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { shortHex } from "../constants/auditData.js";
 
-export default function AuditLedger({
-  auditRecords = [],
-  onSimulateDisburse,
-  onSimulateDuplicate,
-  onSimulateIneligible,
-  onSelectTx,
-}) {
+export default function AuditLedger({ auditRecords = [], onSelectTx }) {
   const [ledgerFilter, setLedgerFilter] = useState("all"); // all | ok | no
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -40,13 +34,12 @@ export default function AuditLedger({
             </em>
           </h2>
           <p className="text-sm text-[#9fb8c9]">
-            Klik tombol simulasi di bawah untuk melihat bagaimana sistem
-            mencatat bantuan yang sah, menolak penerima berulang, dan menyaring
-            pengajuan yang tidak layak.
+            Transparansi penuh pencatatan bansos warga Jawa Barat yang
+            transparan, adil, dan tercatat permanen.
           </p>
         </div>
 
-        {/* Filter & 3 Tombol Simulasi */}
+        {/* Filter Status */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -82,27 +75,6 @@ export default function AuditLedger({
               {auditRecords.filter((r) => r.status !== "TERCATAT").length})
             </button>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={onSimulateDisburse}
-              className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-3.5 py-1.5 text-xs font-semibold !text-white shadow-sm transition hover:brightness-110"
-            >
-              + Simulasikan pencairan
-            </button>
-            <button
-              onClick={onSimulateIneligible}
-              className="cursor-pointer rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400 transition hover:bg-amber-500/20"
-            >
-              Uji tidak layak
-            </button>
-            <button
-              onClick={onSimulateDuplicate}
-              className="cursor-pointer rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-1.5 text-xs font-semibold text-[#ff8a8a] transition hover:bg-rose-500/20"
-            >
-              Uji pengajuan berulang
-            </button>
-          </div>
         </div>
 
         {/* Kolom Pencarian */}
@@ -134,9 +106,6 @@ export default function AuditLedger({
             <tbody className="divide-y divide-white/[0.06]">
               {filteredLedger.length > 0 ? (
                 filteredLedger.map((row, idx) => {
-                  const isSim =
-                    Boolean(row.isSimulation) ||
-                    String(row.refId || "").startsWith("SIM-");
                   const isIneligible =
                     row.status === "TIDAK_LAYAK" ||
                     (row.status !== "TERCATAT" &&
@@ -194,15 +163,6 @@ export default function AuditLedger({
                               Ditolak: Sudah Terdaftar
                             </span>
                           )}
-
-                          {isSim && (
-                            <span
-                              title="Hasil uji coba interaktif di browser"
-                              className="rounded border border-[rgba(71,158,206,0.35)] bg-[rgba(71,158,206,0.12)] px-1.5 py-0.5 text-[9px] font-semibold tracking-wide text-[#479ece]"
-                            >
-                              Simulasi
-                            </span>
-                          )}
                         </div>
                       </td>
                       <td className="px-4 py-3 font-mono text-[11px] text-[#479ece]">
@@ -226,12 +186,6 @@ export default function AuditLedger({
             </tbody>
           </table>
         </div>
-
-        <p className="mt-3 text-[11px] text-[#9fb8c9]">
-          *Baris berlabel <strong>Simulasi</strong> adalah hasil uji coba
-          sementara di browser. Transaksi resmi dari Portal Petugas tercatat
-          permanen di jaringan pengawasan publik tanpa label simulasi.
-        </p>
       </div>
     </section>
   );

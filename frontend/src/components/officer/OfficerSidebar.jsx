@@ -3,23 +3,8 @@ import React from "react";
 const OPERATIONAL_MENUS = [
   {
     id: "registrasi",
-    label: "1. Pendaftaran Baru",
+    label: "Pendaftaran Bansos",
     icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z",
-  },
-  {
-    id: "verifikasi",
-    label: "2. Cek Penerima Ganda",
-    icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-  },
-  {
-    id: "penilaian-ai",
-    label: "3. Penilaian Skor AI",
-    icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
-  },
-  {
-    id: "penyaluran",
-    label: "4. Salurkan Bantuan",
-    icon: "M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z",
   },
 ];
 
@@ -57,25 +42,16 @@ export default function OfficerSidebar({
   return (
     <aside className="fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-slate-200 bg-white shadow-sm">
       {/* Logo & Judul Dashboard */}
-      <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-6">
+      <a
+        href="/"
+        className="flex h-16 items-center gap-3 border-b border-slate-100 px-6"
+      >
         <img
-          src="/logo-icon.png"
+          src="/logo-rantaiasa-light.png"
           alt="RantaiAsa"
-          className="h-8 w-8 object-contain"
+          className="w-48 object-contain"
         />
-        <div>
-          <div className="font-heading flex items-center gap-1.5 text-base font-bold tracking-tight text-slate-900">
-            <span>Rantai</span>
-            <span className="text-sky-600">Asa</span>
-            <span className="rounded border border-sky-200 bg-sky-50 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-sky-700">
-              PETUGAS
-            </span>
-          </div>
-          <p className="text-[10px] text-slate-500">
-            Sistem Operasional Bansos
-          </p>
-        </div>
-      </div>
+      </a>
 
       {/* Daftar Menu Sidebar */}
       <div
@@ -111,7 +87,7 @@ export default function OfficerSidebar({
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
               />
             </svg>
-            <span>Semua Data Penerima</span>
+            <span>Daftar Penerima Bantuan</span>
           </button>
         </div>
 
@@ -250,16 +226,16 @@ export default function OfficerSidebar({
       <div className="border-t border-slate-100 bg-slate-50 p-3.5">
         <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-xs font-bold text-sky-700">
-            {officer?.name ? officer.name.charAt(0) : "P"}
+            {officer?.name ? officer.name.charAt(0) : "-"}
           </div>
           <div className="min-w-0 flex-1">
             <span className="block truncate text-xs font-semibold text-slate-900">
-              {officer?.name || "Budi Santoso, S.STP"}
+              {officer?.name || "-"}
             </span>
             <span className="block truncate text-[10px] text-slate-500">
               {officer?.assignedRegion
                 ? `Wilayah ${officer.assignedRegion}`
-                : "Kabupaten Bogor"}
+                : "-"}
             </span>
           </div>
         </div>

@@ -6,8 +6,8 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
   const { loginWithWallet, loginWithCredentials, isAuthenticating, authError } = useAuth();
   const navigate = useNavigate();
   const [authMethod, setAuthMethod] = useState("wallet"); // "wallet" | "nip"
-  const [nip, setNip] = useState("19880415 201201 1 002");
-  const [password, setPassword] = useState("petugas2026");
+  const [nip, setNip] = useState("");
+  const [password, setPassword] = useState("");
 
   if (!isOpen) return null;
 

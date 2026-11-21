@@ -3,18 +3,6 @@ import { BrowserProvider } from "ethers";
 
 const AuthContext = createContext(null);
 
-const DEMO_OFFICER = {
-  id: "OFFICER-3201-09",
-  name: "Budi Santoso, S.STP",
-  role: "Petugas Verifikator Wilayah",
-  nip: "19880415 201201 1 002",
-  department: "Dinas Sosial Provinsi Jawa Barat",
-  assignedRegion: "3201",
-  regionName: "Kabupaten Bogor",
-  wallet: "0xDebE39681c91F60C010d7C66e443770cf85dF3bf",
-  status: "ACTIVE_VERIFIED"
-};
-
 export function AuthProvider({ children }) {
   const [officer, setOfficer] = useState(() => {
     try {
@@ -55,49 +43,42 @@ export function AuthProvider({ children }) {
       const walletAddr = accounts[0];
       const signer = await provider.getSigner();
 
-      // Request nonce from backend if online, otherwise fallback to local verified session
-      let nonce = "sim-nonce-" + Date.now();
-      try {
-        const nonceRes = await fetch("http://localhost:4000/auth/nonce", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddr })
-        });
-        if (nonceRes.ok) {
-          const nonceData = await nonceRes.json();
-          nonce = nonceData.nonce;
-        }
-      } catch (err) {
-        console.warn("Backend /auth/nonce unreachable, using local crypto session:", err);
-      }
+      const nonceRes = await fetch("http://localhost:4000/auth/nonce", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddr }),
+      });
+      const nonceData = await nonceRes.json();
+      if (!nonceRes.ok) throw new Error(nonceData.detail || "Gagal membuat nonce autentikasi.");
 
-      const messageToSign = `RantaiAsa login: ${nonce}`;
+      const messageToSign = `RantaiAsa login: ${nonceData.nonce}`;
       const signature = await signer.signMessage(messageToSign);
+      const verifyRes = await fetch("http://localhost:4000/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddr, signature }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyRes.ok) throw new Error(verifyData.detail || "Verifikasi wallet gagal.");
 
-      // Verify signature on backend if available
-      let sessionToken = "jwt-sim-" + signature.slice(0, 32);
-      try {
-        const verifyRes = await fetch("http://localhost:4000/auth/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddr, signature })
-        });
-        if (verifyRes.ok) {
-          const verifyData = await verifyRes.json();
-          sessionToken = verifyData.token;
-        }
-      } catch (err) {
-        console.warn("Backend /auth/verify unreachable, using verified wallet session token.");
-      }
-
+      const profileResponse = await fetch("http://localhost:4000/auth/me", {
+        headers: { Authorization: `Bearer ${verifyData.token}` },
+      });
+      const profile = await profileResponse.json();
+      if (!profileResponse.ok) throw new Error(profile.detail || "Profil petugas tidak ditemukan.");
       const officerProfile = {
-        ...DEMO_OFFICER,
-        wallet: walletAddr,
-        loginAt: new Date().toISOString()
+        id: profile.id,
+        name: profile.display_name,
+        role: profile.role_name,
+        nip: profile.nip,
+        department: profile.department,
+        assignedRegion: profile.region_code,
+        wallet: profile.wallet_address,
+        status: profile.status,
+        loginAt: new Date().toISOString(),
       };
-
       setOfficer(officerProfile);
-      setToken(sessionToken);
+      setToken(verifyData.token);
       setIsAuthenticating(false);
       return { success: true, officer: officerProfile };
     } catch (err) {
@@ -112,27 +93,45 @@ export function AuthProvider({ children }) {
   const loginWithCredentials = async (nipInput, passwordInput) => {
     setIsAuthenticating(true);
     setAuthError(null);
-    await new Promise((r) => setTimeout(r, 600));
-
-    // Demo password / credentials
     if (!nipInput || !passwordInput) {
       setIsAuthenticating(false);
       const msg = "NIP Petugas dan Kata Sandi wajib diisi.";
       setAuthError(msg);
       return { success: false, error: msg };
     }
-
-    const demoProfile = {
-      ...DEMO_OFFICER,
-      nip: nipInput,
-      loginAt: new Date().toISOString()
-    };
-    const demoToken = "jwt-officer-session-" + Date.now();
-
-    setOfficer(demoProfile);
-    setToken(demoToken);
-    setIsAuthenticating(false);
-    return { success: true, officer: demoProfile };
+    try {
+      const response = await fetch("http://localhost:4000/auth/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nip: nipInput, password: passwordInput }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Autentikasi petugas gagal.");
+      const profileResponse = await fetch("http://localhost:4000/auth/me", {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
+      const profile = await profileResponse.json();
+      if (!profileResponse.ok) throw new Error(profile.detail || "Profil petugas tidak ditemukan.");
+      const officerProfile = {
+        id: profile.id,
+        name: profile.display_name,
+        role: profile.role_name,
+        nip: profile.nip,
+        department: profile.department,
+        assignedRegion: profile.region_code,
+        wallet: profile.wallet_address,
+        status: profile.status,
+        loginAt: new Date().toISOString(),
+      };
+      setOfficer(officerProfile);
+      setToken(data.token);
+      setIsAuthenticating(false);
+      return { success: true, officer: officerProfile };
+    } catch (err) {
+      setAuthError(err.message);
+      setIsAuthenticating(false);
+      return { success: false, error: err.message };
+    }
   };
 
   const logout = () => {

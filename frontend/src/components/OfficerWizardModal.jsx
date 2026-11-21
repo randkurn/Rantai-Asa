@@ -11,13 +11,11 @@ export default function OfficerWizardModal({
   onModelVersionChange,
 }) {
   const [wizardStep, setWizardStep] = useState(1);
-  const [simNik, setSimNik] = useState("3201012304920005");
+  const [simNik, setSimNik] = useState("");
   const [simProgram, setSimProgram] = useState("PKH-2026-P1");
   const [simTargetRegion, setSimTargetRegion] = useState("3201");
   const [duplicateAlert, setDuplicateAlert] = useState(false);
-  const [generatedHash] = useState(
-    "0x7d91c4e28b30a6f194c82d7e51a039b4f6c28e10d5a73b94c1f08e26a4d91b3c"
-  );
+  const [generatedHash, setGeneratedHash] = useState("");
 
   // Multidimensional AI Inputs
   const [aiIncomeBand, setAiIncomeBand] = useState(1);
@@ -70,19 +68,9 @@ export default function OfficerWizardModal({
       })
       .catch(() => {
         if (!isMounted) return;
-        let score =
-          52 +
-          (5 - aiIncomeBand) * 8 +
-          (aiHousehold - 3) * 3 +
-          (4 - aiHousing) * 7 -
-          aiEduLevel * 3;
-        if (aiVulnerable) score += 12;
-        if (aiUnemployed) score += 8;
-        if (!aiLandOwner) score += 6;
-        if (aiCivilServant) score -= 50;
-        score = Math.max(5, Math.min(99, Math.round(score)));
-        setAiLiveScore(score);
-        setAiLabel(score >= 60 ? "ELIGIBLE" : score >= 45 ? "REVIEW" : "NOT_ELIGIBLE");
+        setAiLiveScore(null);
+        setAiLabel("AI_UNAVAILABLE");
+        setAiFactors([]);
       });
 
     return () => {
@@ -105,49 +93,7 @@ export default function OfficerWizardModal({
   if (!isOpen) return null;
 
   const handleFinalSubmit = () => {
-    const newRef = `RCP-${simTargetRegion}-0${auditCount + 1}`;
-    const randHex = Array.from({ length: 64 }, () =>
-      Math.floor(Math.random() * 16).toString(16)
-    ).join("");
-    const now = new Date();
-    const tsStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(
-      2,
-      "0"
-    )}:${String(now.getMinutes()).padStart(2, "0")}:${String(
-      now.getSeconds()
-    ).padStart(2, "0")} WIB`;
-    const amt = simProgram.startsWith("PKH") ? 750000 : 600000;
-
-    onSubmitRecord({
-      timestamp: tsStr,
-      block: 14892250 + auditCount,
-      refId: newRef,
-      identityHash: generatedHash,
-      program: simProgram,
-      period: "P1-2026",
-      kodeWilayah: parseInt(simTargetRegion),
-      province: REGION_NAMES[parseInt(simTargetRegion)] || `Kab/Kota ${simTargetRegion}`,
-      aiScore: aiLiveScore,
-      aiLabel,
-      status: "TERCATAT",
-      factors:
-        aiFactors.length > 0
-          ? aiFactors
-          : [
-              { name: `Pita Pengeluaran (Band ${aiIncomeBand})`, impact: "+" },
-              { name: `Jumlah Anggota (${aiHousehold} Jiwa)`, impact: "+" },
-              { name: aiVulnerable ? "Anggota Rentan (Ada)" : "Kualitas Hunian Rendah", impact: "+" },
-            ],
-      amount: amt,
-      txHash: "0x" + randHex,
-      officer: walletAddress || "0xDebE39681c91F60C010d7C66e443770cf85dF3bf",
-    });
-
-    setWizardStep(1);
-    onClose();
+    setDuplicateAlert(true);
   };
 
   return (

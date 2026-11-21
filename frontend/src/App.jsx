@@ -7,7 +7,6 @@ import {
   useP2Trend,
 } from "./hooks/useStats.js";
 import { useAuditLedger } from "./hooks/useAuditLedger.js";
-import { FALLBACK_JABAR_STATS } from "./constants/auditData.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import HeroSection from "./components/HeroSection.jsx";
@@ -44,9 +43,6 @@ function PublicPortal({
   toastMessage,
   showToast,
   auditRecords,
-  addRecord,
-  simulateDisburse,
-  simulateDuplicate,
   kpis,
   enrichedRegions,
   activeRegion,
@@ -62,48 +58,6 @@ function PublicPortal({
     } else {
       setIsLoginModalOpen(true);
     }
-  };
-
-  const handleSimulateIneligible = () => {
-    const randomScore = Math.floor(24 + Math.random() * 30); // Skor di bawah batas minimum 60
-    const regions = [
-      "Kota Bandung",
-      "Kota Depok",
-      "Kab. Bekasi",
-      "Kota Cimahi",
-    ];
-    const programs = ["Bantuan Pangan", "PKH Tahap II", "BLT Desa"];
-
-    const newRow = {
-      timestamp: new Date().toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-      block: Math.floor(18450000 + Math.random() * 9000),
-      identityHash:
-        "0x" +
-        Array.from({ length: 64 }, () =>
-          Math.floor(Math.random() * 16).toString(16),
-        ).join(""),
-      program: programs[Math.floor(Math.random() * programs.length)],
-      province: regions[Math.floor(Math.random() * regions.length)],
-      aiScore: randomScore,
-      status: "TIDAK_LAYAK",
-      txHash:
-        "0x" +
-        Array.from({ length: 64 }, () =>
-          Math.floor(Math.random() * 16).toString(16),
-        ).join(""),
-      refId: "SIM-" + Math.floor(1000 + Math.random() * 9000),
-      isSimulation: true,
-    };
-
-    addRecord(newRow);
-    showToast(
-      `Simulasi ditolak: Nilai kelayakan (${randomScore}/100) di bawah batas minimum 60.`,
-      true,
-    );
   };
 
   return (
@@ -146,9 +100,6 @@ function PublicPortal({
 
       <AuditLedger
         auditRecords={auditRecords}
-        onSimulateDisburse={simulateDisburse}
-        onSimulateIneligible={handleSimulateIneligible}
-        onSimulateDuplicate={simulateDuplicate}
         onSelectTx={setSelectedTxForModal}
       />
 
@@ -177,12 +128,6 @@ function PublicPortal({
         auditCount={auditRecords.length}
         walletAddress={wallet.address}
         onModelVersionChange={setAiModelVersion}
-        onSubmitRecord={(newRecord) => {
-          addRecord(newRecord);
-          showToast(
-            `Penyaluran ${newRecord.refId} berhasil dicatat on-chain Polygon Amoy!`,
-          );
-        }}
       />
     </div>
   );
@@ -207,12 +152,10 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3200);
   };
 
-  const { auditRecords, addRecord, simulateDisburse, simulateDuplicate, kpis } =
-    useAuditLedger(wallet.address, showToast);
+  const { auditRecords, kpis } = useAuditLedger();
 
   const enrichedRegions = useMemo(() => {
-    const sourceStats =
-      regionStats.length > 0 ? regionStats : FALLBACK_JABAR_STATS;
+    const sourceStats = regionStats;
     return sourceStats.map((s) => ({
       ...s,
       laporan_verified: reportCounts[String(s.kode)] || 0,
@@ -255,9 +198,6 @@ export default function App() {
             toastMessage={toastMessage}
             showToast={showToast}
             auditRecords={auditRecords}
-            addRecord={addRecord}
-            simulateDisburse={simulateDisburse}
-            simulateDuplicate={simulateDuplicate}
             kpis={kpis}
             enrichedRegions={enrichedRegions}
             activeRegion={activeRegion}
