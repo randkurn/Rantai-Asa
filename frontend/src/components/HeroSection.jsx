@@ -48,8 +48,6 @@ export default function HeroSection({
     "Setiap rupiah tercatat terbuka di audit publik."
   ];
 
-  const fadeRgb = isDark ? "5, 15, 24" : "255, 255, 255";
-
   useEffect(() => {
     let sentenceIdx = 0;
     let charIdx = 0;
@@ -116,7 +114,7 @@ export default function HeroSection({
   return (
     <section
       id="top"
-      className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-36 text-center"
+      className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-16 text-center"
     >
       <div className="relative z-10 mx-auto max-w-5xl">
         <div
@@ -275,22 +273,6 @@ export default function HeroSection({
           </a>
         </div>
       </div>
-
-      {/* Gradasi pudar bertahap di batas bawah HeroSection */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 transition-all duration-300"
-        style={{
-          background: `linear-gradient(
-            to bottom,
-            rgba(${fadeRgb}, 0) 0%,
-            rgba(${fadeRgb}, 0.08) 25%,
-            rgba(${fadeRgb}, 0.28) 50%,
-            rgba(${fadeRgb}, 0.62) 75%,
-            rgba(${fadeRgb}, 0.88) 90%,
-            rgba(${fadeRgb}, 1) 100%
-          )`,
-        }}
-      />
     </section>
   );
 }
