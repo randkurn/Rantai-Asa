@@ -33,7 +33,7 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
       <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8 text-slate-800">
-        
+
         {/* Glow corner */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-sky-500/10 blur-3xl" />
 
@@ -64,22 +64,20 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
           <button
             type="button"
             onClick={() => setAuthMethod("wallet")}
-            className={`flex-1 rounded-lg py-2 transition ${
-              authMethod === "wallet"
-                ? "bg-white text-sky-700 shadow-xs font-bold"
-                : "text-slate-600 hover:text-slate-900"
-            }`}
+            className={`flex-1 rounded-lg py-2 transition ${authMethod === "wallet"
+              ? "bg-white text-sky-700 shadow-xs font-bold"
+              : "text-slate-600 hover:text-slate-900"
+              }`}
           >
             Tanda Tangan Digital (Wallet)
           </button>
           <button
             type="button"
             onClick={() => setAuthMethod("nip")}
-            className={`flex-1 rounded-lg py-2 transition ${
-              authMethod === "nip"
-                ? "bg-white text-sky-700 shadow-xs font-bold"
-                : "text-slate-600 hover:text-slate-900"
-            }`}
+            className={`flex-1 rounded-lg py-2 transition ${authMethod === "nip"
+              ? "bg-white text-sky-700 shadow-xs font-bold"
+              : "text-slate-600 hover:text-slate-900"
+              }`}
           >
             NIP Petugas (Kredensial)
           </button>
