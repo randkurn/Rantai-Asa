@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
+import { useTheme } from "../hooks/useTheme.js";
 
 const JabarMap = lazy(() => import("./JabarMap.jsx"));
 
@@ -38,9 +39,13 @@ export default function HeroSection({
   setMapMetric,
   onOpenOfficerModal,
 }) {
+  const { isDark } = useTheme();
   const [typedText, setTypedText] = useState("");
   const tagline =
     "Wujudkan bantuan sosial yang transparan dan bebas penerima ganda";
+
+  // Warna target gradasi mengikuti tema aktif (#050f18 di mode gelap, #ffffff di mode terang)
+  const fadeRgb = isDark ? "5, 15, 24" : "255, 255, 255";
 
   useEffect(() => {
     let idx = 0;
@@ -53,40 +58,43 @@ export default function HeroSection({
 
   const currentMetric = METRICS.find((m) => m.key === mapMetric) || METRICS[0];
 
-const getMetricValue = () => {
-  if (mapMetric === "poor") {
-    const total = Number(activeRegion.penduduk_miskin_k || 401.8);
-    return `${total.toLocaleString("id-ID")} ribu jiwa`;
-  }
-  if (mapMetric === "p1") {
-    const val = activeRegion.p1_terkini ?? 0.97;
-    if (val >= 1.5) return "Sangat Jauh dari Layak";
-    if (val >= 1.0) return "Cukup Jauh dari Layak";
-    return "Mendekati Layak";
-  }
-  if (mapMetric === "trend") {
-    const val = activeRegion.tren ?? -0.22;
-    if (val <= -0.25) return "Membaik Pesat";
-    if (val <= -0.15) return "Mulai Membaik";
-    return "Penurunan Melambat";
-  }
-  // Untuk tab "Tingkat Urgensi" (p2)
-  const val = activeRegion.p2_terkini ?? 0.23;
-  if (val >= 0.4) return "Prioritas Sangat Tinggi";
-  if (val >= 0.3) return "Prioritas Tinggi";
-  if (val >= 0.2) return "Prioritas Sedang";
-  return "Prioritas Rendah";
-};
+  const getMetricValue = () => {
+    if (mapMetric === "poor") {
+      const total = Number(activeRegion.penduduk_miskin_k || 401.8);
+      return `${total.toLocaleString("id-ID")} ribu jiwa`;
+    }
+    if (mapMetric === "p1") {
+      const val = activeRegion.p1_terkini ?? 0.97;
+      if (val >= 1.5) return "Sangat Jauh dari Layak";
+      if (val >= 1.0) return "Cukup Jauh dari Layak";
+      return "Mendekati Layak";
+    }
+    if (mapMetric === "trend") {
+      const val = activeRegion.tren ?? -0.22;
+      if (val <= -0.25) return "Membaik Pesat";
+      if (val <= -0.15) return "Mulai Membaik";
+      return "Penurunan Melambat";
+    }
+    // Untuk tab "Tingkat Urgensi" (p2)
+    const val = activeRegion.p2_terkini ?? 0.23;
+    if (val >= 0.4) return "Prioritas Sangat Tinggi";
+    if (val >= 0.3) return "Prioritas Tinggi";
+    if (val >= 0.2) return "Prioritas Sedang";
+    return "Prioritas Rendah";
+  };
 
   return (
     <section
       id="top"
-      className="hero-section relative bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-16 text-center"
+      className="hero-section relative overflow-hidden bg-[radial-gradient(ellipse_70%_90%_at_50%_0%,rgba(71,158,206,0.45),transparent_70%),linear-gradient(180deg,#0b2a40,#050f18)] px-4 pt-24 pb-36 text-center"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="relative z-10 mx-auto max-w-5xl">
         <div
           className="mb-4 inline-flex items-center gap-2 rounded-full border border-sky-300/50 bg-sky-950/40 px-4 py-1.5 text-xs"
-          style={{ color: "#e0f2fe", textShadow: "0 1px 3px rgba(0,0,0,.65)" }}
+          style={{
+            color: "#e0f2fe",
+            textShadow: "0 1px 3px rgba(0,0,0,.65)",
+          }}
         >
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
           <span style={{ color: "#f0f9ff", fontWeight: 700 }}>
@@ -126,14 +134,14 @@ const getMetricValue = () => {
           }}
         >
           <style>{`
-    #jabar-map-wrapper,
-    #jabar-map-wrapper > div,
-    #jabar-map-wrapper .leaflet-container {
-      background: transparent !important;
-      background-color: transparent !important;
-      box-shadow: none !important;
-    }
-  `}</style>
+            #jabar-map-wrapper,
+            #jabar-map-wrapper > div,
+            #jabar-map-wrapper .leaflet-container {
+              background: transparent !important;
+              background-color: transparent !important;
+              box-shadow: none !important;
+            }
+          `}</style>
 
           <Suspense
             fallback={
@@ -217,6 +225,13 @@ const getMetricValue = () => {
         {/* Tombol Utama */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <a
+            href="#alur"
+            className="cursor-pointer rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+            style={{ color: "#f8fafc", borderColor: "rgba(255,255,255,.45)" }}
+          >
+            Cara Kerja
+          </a>
+          <a
             href="#ledger"
             className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110"
             style={{
@@ -226,23 +241,24 @@ const getMetricValue = () => {
           >
             Lihat Riwayat Penyaluran
           </a>
-          <a
-            href="#alur"
-            className="cursor-pointer rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
-            style={{ color: "#f8fafc", borderColor: "rgba(255,255,255,.45)" }}
-          >
-            Cara Kerja
-          </a>
-          <button
-            type="button"
-            onClick={onOpenOfficerModal}
-            className="cursor-pointer rounded-xl border border-sky-400/35 bg-sky-400/15 px-5 py-2.5 text-sm font-semibold text-sky-100 transition hover:bg-sky-400/25"
-            style={{ color: "#e0f2fe", borderColor: "rgba(125,211,252,.55)" }}
-          >
-            Coba Cek Kelayakan Penerima
-          </button>
         </div>
       </div>
+
+      {/* Gradasi pudar bertahap di batas bawah HeroSection */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 transition-all duration-300"
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            rgba(${fadeRgb}, 0) 0%,
+            rgba(${fadeRgb}, 0.08) 25%,
+            rgba(${fadeRgb}, 0.28) 50%,
+            rgba(${fadeRgb}, 0.62) 75%,
+            rgba(${fadeRgb}, 0.88) 90%,
+            rgba(${fadeRgb}, 1) 100%
+          )`,
+        }}
+      />
     </section>
   );
 }

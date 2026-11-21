@@ -1,22 +1,76 @@
 import React from "react";
+import { useTheme } from "../hooks/useTheme.js";
 
-export default function CtaSection({ onOpenOfficerModal }) {
+export default function CtaSection({ onOpenReports }) {
+  const { isDark } = useTheme();
+  const fadeRgb = isDark ? "10, 27, 42" : "255, 255, 255";
+
   return (
-    <section className="py-20 px-4 text-center bg-[radial-gradient(ellipse_80%_100%_at_50%_0%,rgba(71,158,206,0.32),transparent_70%),#050f18]">
-      <div className="max-w-[640px] mx-auto space-y-4">
-        <h2 className="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight">
-          Siap membuat bantuan sosial yang bisa diaudit siapa saja?
+    <section
+      className="relative overflow-hidden px-4 pt-36 pb-20 text-center"
+      style={{
+        background:
+          "radial-gradient(ellipse at 50% 25%, #0d2b42 0%, #071826 62%, #040d15 100%)",
+      }}
+    >
+      {/* Gradasi pudar bertahap di batas atas CtaSection */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-48 transition-all duration-300"
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            rgba(${fadeRgb}, 1) 0%,
+            rgba(${fadeRgb}, 0.88) 12%,
+            rgba(${fadeRgb}, 0.62) 28%,
+            rgba(${fadeRgb}, 0.28) 52%,
+            rgba(${fadeRgb}, 0.08) 76%,
+            rgba(${fadeRgb}, 0) 100%
+          )`,
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-[680px]">
+        <span
+          className="inline-flex items-center gap-2 rounded-full border border-[rgba(71,158,206,0.28)] bg-[rgba(71,158,206,0.14)] px-3.5 py-1 text-xs"
+          style={{ color: "#bfe3f6" }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#479ece]" />
+          Pengawasan Bersama Masyarakat Jawa Barat
+        </span>
+
+        <h2
+          className="font-heading mt-4 mb-3 text-3xl font-bold leading-tight sm:text-4xl"
+          style={{ color: "#ffffff" }}
+        >
+          Lihat bantuan yang{" "}
+          <span style={{ color: "#479ece" }}>tidak tepat sasaran</span> di
+          lingkunganmu?
         </h2>
-        <p className="text-[#9fb8c9] text-sm leading-relaxed">
-          Mulai dari satu kecamatan, satu kohort PKH, lalu perluas ke PKH, BPNT, dan bantuan beras di seluruh 27 Kabupaten/Kota Jawa Barat.
+
+        <p
+          className="mx-auto mb-7 max-w-[560px] text-sm leading-relaxed"
+          style={{ color: "#9fb8c9" }}
+        >
+          Jangan diam saja. Sampaikan laporanmu agar penyaluran bantuan sosial
+          di Jawa Barat benar-benar diterima oleh keluarga yang berhak.
         </p>
-        <div className="pt-2">
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <button
-            onClick={onOpenOfficerModal}
-            className="px-6 py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-[#479ece] to-[#2c7fb0] hover:brightness-110 shadow-[0_10px_30px_rgba(71,158,206,0.35)] transition cursor-pointer"
+            onClick={onOpenReports}
+            className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-6 py-3 text-sm font-bold shadow-lg shadow-[#479ece]/20 transition hover:brightness-110"
+            style={{ color: "#ffffff" }}
           >
-            Buka Portal Verifikasi Petugas
+            Kirim Laporan Warga
           </button>
+
+          <a
+            href="#ledger"
+            className="rounded-xl border border-[rgba(71,158,206,0.35)] bg-white/[0.05] px-6 py-3 text-sm font-semibold transition hover:border-[#479ece] hover:bg-[rgba(71,158,206,0.14)]"
+            style={{ color: "#ffffff" }}
+          >
+            Cek Riwayat Penyaluran
+          </a>
         </div>
       </div>
     </section>

@@ -2,9 +2,10 @@ import React, { useState, useMemo } from "react";
 import { shortHex } from "../constants/auditData.js";
 
 export default function AuditLedger({
-  auditRecords,
+  auditRecords = [],
   onSimulateDisburse,
   onSimulateDuplicate,
+  onSimulateIneligible,
   onSelectTx,
 }) {
   const [ledgerFilter, setLedgerFilter] = useState("all"); // all | ok | no
@@ -14,7 +15,9 @@ export default function AuditLedger({
     return auditRecords.filter((r) => {
       const matchFilter =
         ledgerFilter === "all" ||
-        (ledgerFilter === "ok" ? r.status === "TERCATAT" : r.status !== "TERCATAT");
+        (ledgerFilter === "ok"
+          ? r.status === "TERCATAT"
+          : r.status !== "TERCATAT");
       const q = searchQuery.toLowerCase().trim();
       const matchQuery =
         !q ||
@@ -27,28 +30,33 @@ export default function AuditLedger({
   }, [auditRecords, ledgerFilter, searchQuery]);
 
   return (
-    <section id="ledger" className="py-20 px-4 bg-[#0a1b2a]">
-      <div className="max-w-[1080px] mx-auto">
-        <div className="text-center max-w-[680px] mx-auto mb-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(71,158,206,0.14)] border border-[rgba(71,158,206,0.28)] text-xs ">
-            Ledger Audit Publik
+    <section id="ledger" className="bg-[#0a1b2a] px-4 py-20">
+      <div className="mx-auto max-w-[1080px]">
+        <div className="mx-auto mb-10 max-w-[680px] text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(71,158,206,0.28)] bg-[rgba(71,158,206,0.14)] px-3 py-1 text-xs">
+            Riwayat Penyaluran Publik
           </span>
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-white mt-3.5 mb-2.5 leading-tight">
-            Setiap penyaluran, <em className="text-[#479ece] not-italic">terverifikasi</em> siapa pun
+          <h2 className="font-heading mt-3.5 mb-2.5 text-3xl font-bold leading-tight text-white sm:text-4xl">
+            Pantau langsung setiap{" "}
+            <em className="not-italic text-[#479ece]">
+              bantuan yang tersalurkan
+            </em>
           </h2>
-          <p className="text-[#9fb8c9] text-sm">
-            Coba simulasikan penyaluran atau pendaftaran ganda dan amati bagaimana smart contract menolaknya tanpa kompromi.
+          <p className="text-sm text-[#9fb8c9]">
+            Klik tombol simulasi di bawah untuk melihat bagaimana sistem
+            mencatat bantuan yang sah, menolak penerima berulang, dan menyaring
+            pengajuan yang tidak layak.
           </p>
         </div>
 
-        {/* Tools & Filter Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
+        {/* Filter & 3 Tombol Simulasi */}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setLedgerFilter("all")}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+              className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "all"
-                  ? "bg-[#479ece] text-[#04121c] font-bold"
+                  ? "bg-[#479ece] font-bold text-[#04121c]"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
@@ -56,109 +64,176 @@ export default function AuditLedger({
             </button>
             <button
               onClick={() => setLedgerFilter("ok")}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+              className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "ok"
-                  ? "bg-[#479ece] text-[#04121c] font-bold"
+                  ? "bg-[#479ece] font-bold text-[#04121c]"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
-              Tersalurkan ({auditRecords.filter((r) => r.status === "TERCATAT").length})
+              Tersalurkan (
+              {auditRecords.filter((r) => r.status === "TERCATAT").length})
             </button>
             <button
               onClick={() => setLedgerFilter("no")}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer ${
+              className={`cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                 ledgerFilter === "no"
-                  ? "bg-[#479ece] text-[#04121c] font-bold"
+                  ? "bg-[#479ece] font-bold text-[#04121c]"
                   : "border border-[rgba(71,158,206,0.28)] text-[#9fb8c9] hover:text-white"
               }`}
             >
-              Ditolak ({auditRecords.filter((r) => r.status !== "TERCATAT").length})
+              Ditolak (
+              {auditRecords.filter((r) => r.status !== "TERCATAT").length})
             </button>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={onSimulateDisburse}
-              className="px-3.5 py-1.5 rounded-xl font-semibold text-xs text-white bg-gradient-to-r from-[#479ece] to-[#2c7fb0] hover:brightness-110 shadow-sm transition cursor-pointer"
+              className="cursor-pointer rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:brightness-110"
             >
-              + Simulasikan penyaluran
+              + Simulasikan pencairan
+            </button>
+            <button
+              onClick={onSimulateIneligible}
+              className="cursor-pointer rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-semibold text-amber-400 transition hover:bg-amber-500/20"
+            >
+              Uji tidak layak
             </button>
             <button
               onClick={onSimulateDuplicate}
-              className="px-3.5 py-1.5 rounded-xl font-semibold text-xs text-[#ff8a8a] bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 transition cursor-pointer"
+              className="cursor-pointer rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-1.5 text-xs font-semibold text-[#ff8a8a] transition hover:bg-rose-500/20"
             >
-              Uji pendaftaran ganda
+              Uji pengajuan berulang
             </button>
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Kolom Pencarian */}
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Cari berdasarkan Tx Hash, Hash Identitas, Kode Referensi, atau Kabupaten..."
+            placeholder="Cari berdasarkan kode bukti, kode identitas warga, nomor referensi, atau kabupaten/kota..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-3.5 py-2 rounded-xl bg-white/[0.04] border border-[rgba(71,158,206,0.2)] text-xs text-white placeholder-[#9fb8c9]/50 focus:outline-none focus:border-[#479ece]"
+            className="w-full rounded-xl border border-[rgba(71,158,206,0.2)] bg-white/[0.04] px-3.5 py-2 text-xs text-white placeholder-[#9fb8c9]/50 focus:border-[#479ece] focus:outline-none"
           />
         </div>
 
-        {/* Table Container */}
+        {/* Tabel Riwayat Penyaluran */}
         <div className="overflow-x-auto rounded-2xl border border-[rgba(71,158,206,0.18)] bg-white/[0.04]">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="bg-[rgba(71,158,206,0.07)] text-[#9fb8c9] text-[11px] font-medium border-b border-white/[0.06]">
-                <th className="py-3 px-4">Waktu (WIB)</th>
-                <th className="py-3 px-4">Blok</th>
-                <th className="py-3 px-4">Hash Identitas</th>
-                <th className="py-3 px-4">Program</th>
-                <th className="py-3 px-4">Kab/Kota Jabar</th>
-                <th className="py-3 px-4">Skor AI</th>
-                <th className="py-3 px-4">Status Smart Contract</th>
-                <th className="py-3 px-4">Tx Hash</th>
+              <tr className="border-b border-white/[0.06] bg-[rgba(71,158,206,0.07)] text-[11px] font-medium text-[#9fb8c9]">
+                <th className="px-4 py-3">Waktu (WIB)</th>
+                <th className="px-4 py-3">No. Arsip</th>
+                <th className="px-4 py-3">Kode Identitas</th>
+                <th className="px-4 py-3">Jenis Bantuan</th>
+                <th className="px-4 py-3">Kab/Kota Jabar</th>
+                <th className="px-4 py-3">Nilai Layak</th>
+                <th className="px-4 py-3">Status Pencairan</th>
+                <th className="px-4 py-3">Bukti Digital</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]">
-              {filteredLedger.map((row, idx) => (
-                <tr
-                  key={idx}
-                  onClick={() => onSelectTx(row)}
-                  className="hover:bg-white/[0.04] cursor-pointer transition"
-                >
-                  <td className="py-3 px-4 text-[#9fb8c9] font-mono text-[11px] whitespace-nowrap">{row.timestamp}</td>
-                  <td className="py-3 px-4 font-mono text-white text-[11px]">#{row.block}</td>
-                  <td className="py-3 px-4 font-mono text-[#bfe3f6] text-[11px]">{shortHex(row.identityHash)}</td>
-                  <td className="py-3 px-4 font-semibold text-white whitespace-nowrap">{row.program}</td>
-                  <td className="py-3 px-4 text-white whitespace-nowrap">{row.province}</td>
-                  <td className="py-3 px-4 font-mono font-bold">
-                    {row.aiScore > 0 ? (
-                      <span className={row.aiScore >= 60 ? "text-[#5fd7a0]" : "text-[#ff8a8a]"}>{row.aiScore}</span>
-                    ) : (
-                      <span className="text-[#9fb8c9]">—</span>
-                    )}
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    {row.status === "TERCATAT" ? (
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#5fd7a0]/15 text-[#5fd7a0] border border-[#5fd7a0]/30">
-                        Tersalurkan
-                      </span>
-                    ) : (
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ff8a8a]/15 text-[#ff8a8a] border border-[#ff8a8a]/30">
-                        Ditolak: Duplikat
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-4 font-mono text-[#479ece] text-[11px]">
-                    <span className="hover:underline">{shortHex(row.txHash)}</span>
+              {filteredLedger.length > 0 ? (
+                filteredLedger.map((row, idx) => {
+                  const isSim =
+                    Boolean(row.isSimulation) ||
+                    String(row.refId || "").startsWith("SIM-");
+                  const isIneligible =
+                    row.status === "TIDAK_LAYAK" ||
+                    (row.status !== "TERCATAT" &&
+                      row.aiScore > 0 &&
+                      row.aiScore < 60);
+
+                  return (
+                    <tr
+                      key={row.txHash || idx}
+                      onClick={() => onSelectTx(row)}
+                      className="cursor-pointer transition hover:bg-white/[0.04]"
+                    >
+                      <td className="whitespace-nowrap px-4 py-3 font-mono text-[11px] text-[#9fb8c9]">
+                        {row.timestamp}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] text-white">
+                        #{row.block}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] text-[#bfe3f6]">
+                        {shortHex(row.identityHash)}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 font-semibold text-white">
+                        {row.program}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-white">
+                        {row.province}
+                      </td>
+                      <td className="px-4 py-3 font-mono font-bold">
+                        {row.aiScore > 0 ? (
+                          <span
+                            className={
+                              row.aiScore >= 60
+                                ? "text-[#5fd7a0]"
+                                : "text-amber-400"
+                            }
+                          >
+                            {row.aiScore}/100
+                          </span>
+                        ) : (
+                          <span className="text-[#9fb8c9]">—</span>
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3">
+                        <div className="flex items-center gap-1.5">
+                          {row.status === "TERCATAT" ? (
+                            <span className="rounded-full border border-[#5fd7a0]/30 bg-[#5fd7a0]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#5fd7a0]">
+                              Tersalurkan
+                            </span>
+                          ) : isIneligible ? (
+                            <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-[10px] font-bold text-amber-400">
+                              Ditolak: Tidak Layak
+                            </span>
+                          ) : (
+                            <span className="rounded-full border border-[#ff8a8a]/30 bg-[#ff8a8a]/15 px-2.5 py-0.5 text-[10px] font-bold text-[#ff8a8a]">
+                              Ditolak: Sudah Terdaftar
+                            </span>
+                          )}
+
+                          {isSim && (
+                            <span
+                              title="Hasil uji coba interaktif di browser"
+                              className="rounded border border-[rgba(71,158,206,0.35)] bg-[rgba(71,158,206,0.12)] px-1.5 py-0.5 text-[9px] font-semibold tracking-wide text-[#479ece]"
+                            >
+                              Simulasi
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] text-[#479ece]">
+                        <span className="hover:underline">
+                          {shortHex(row.txHash)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="px-4 py-8 text-center text-xs text-[#9fb8c9]"
+                  >
+                    Data penyaluran tidak ditemukan untuk kata kunci tersebut.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
 
-        <p className="text-[11px] text-[#9fb8c9] mt-3">
-          *Data demo adalah simulasi interaktif. Pada mode produksi, setiap baris dibaca langsung dari event smart contract di Polygon Amoy Testnet.
+        <p className="mt-3 text-[11px] text-[#9fb8c9]">
+          *Baris berlabel <strong>Simulasi</strong> adalah hasil uji coba
+          sementara di browser. Transaksi resmi dari Portal Petugas tercatat
+          permanen di jaringan pengawasan publik tanpa label simulasi.
         </p>
       </div>
     </section>

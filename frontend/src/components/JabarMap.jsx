@@ -106,11 +106,51 @@ export default function JabarMap({
             feature.properties?.name ||
             `Wilayah ${kode}`;
 
+          const getTooltipSummary = () => {
+            const miskinText = `${Number(stat?.penduduk_miskin_k ?? 0).toLocaleString("id-ID")} ribu jiwa`;
+
+            if (metric === "poor") {
+              return `Warga Miskin: <b>${miskinText}</b>`;
+            }
+
+            if (metric === "p1") {
+              const val = stat?.p1_terkini ?? 0.97;
+              const label =
+                val >= 1.5
+                  ? "Sangat Jauh dari Layak"
+                  : val >= 1.0
+                    ? "Cukup Jauh dari Layak"
+                    : "Mendekati Layak";
+              return `Jarak Layak: <b>${label}</b> • Miskin: <b>${stat?.penduduk_miskin_k ?? "-"} rb</b>`;
+            }
+
+            if (metric === "trend") {
+              const val = stat?.tren ?? -0.22;
+              const label =
+                val <= -0.25
+                  ? "Membaik Pesat"
+                  : val <= -0.15
+                    ? "Mulai Membaik"
+                    : "Penurunan Melambat";
+              return `Tren 3 Tahun: <b>${label}</b> • Miskin: <b>${stat?.penduduk_miskin_k ?? "-"} rb</b>`;
+            }
+
+            const val = stat?.p2_terkini ?? 0.23;
+            const urgency =
+              val >= 0.4
+                ? "Sangat Tinggi"
+                : val >= 0.3
+                  ? "Tinggi"
+                  : val >= 0.2
+                    ? "Sedang"
+                    : "Rendah";
+            return `Tingkat Urgensi: <b>${urgency}</b> • Miskin: <b>${stat?.penduduk_miskin_k ?? "-"} rb</b>`;
+          };
+
           layer.bindTooltip(
             `<div style="font-family:sans-serif;font-size:12px;line-height:1.4;">
               <strong>${nama}</strong><br/>
-              <span>Tingkat Parah: <b>${stat?.p2_terkini?.toFixed(3) ?? "-"}</b></span> •
-              <span>Miskin: <b>${stat?.penduduk_miskin_k ?? "-"} rb</b></span>
+              <span>${getTooltipSummary()}</span>
             </div>`,
             { sticky: true },
           );

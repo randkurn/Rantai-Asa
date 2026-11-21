@@ -1,7 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useWallet } from "./useWallet.js";
-import { useRegionStats, useReportsByRegion, useP2Trend } from "./hooks/useStats.js";
+import {
+  useRegionStats,
+  useReportsByRegion,
+  useP2Trend,
+} from "./hooks/useStats.js";
 import { useAuditLedger } from "./hooks/useAuditLedger.js";
 import { FALLBACK_JABAR_STATS } from "./constants/auditData.js";
 import { useAuth } from "./context/AuthContext.jsx";
@@ -47,7 +51,7 @@ function PublicPortal({
   enrichedRegions,
   activeRegion,
   p2TrendHistory,
-  trendLoading
+  trendLoading,
 }) {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -60,11 +64,55 @@ function PublicPortal({
     }
   };
 
+  const handleSimulateIneligible = () => {
+    const randomScore = Math.floor(24 + Math.random() * 30); // Skor di bawah batas minimum 60
+    const regions = [
+      "Kota Bandung",
+      "Kota Depok",
+      "Kab. Bekasi",
+      "Kota Cimahi",
+    ];
+    const programs = ["Bantuan Pangan", "PKH Tahap II", "BLT Desa"];
+
+    const newRow = {
+      timestamp: new Date().toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+      block: Math.floor(18450000 + Math.random() * 9000),
+      identityHash:
+        "0x" +
+        Array.from({ length: 64 }, () =>
+          Math.floor(Math.random() * 16).toString(16),
+        ).join(""),
+      program: programs[Math.floor(Math.random() * programs.length)],
+      province: regions[Math.floor(Math.random() * regions.length)],
+      aiScore: randomScore,
+      status: "TIDAK_LAYAK",
+      txHash:
+        "0x" +
+        Array.from({ length: 64 }, () =>
+          Math.floor(Math.random() * 16).toString(16),
+        ).join(""),
+      refId: "SIM-" + Math.floor(1000 + Math.random() * 9000),
+      isSimulation: true,
+    };
+
+    addRecord(newRow);
+    showToast(
+      `Simulasi ditolak: Nilai kelayakan (${randomScore}/100) di bawah batas minimum 60.`,
+      true,
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#050f18] text-white selection:bg-[#479ece]/30 selection:text-white font-sans">
       <Navbar
         activeTab={activeTab}
-        onToggleReports={() => setActiveTab((t) => (t === "reports" ? "home" : "reports"))}
+        onToggleReports={() =>
+          setActiveTab((t) => (t === "reports" ? "home" : "reports"))
+        }
         wallet={wallet}
         onOpenOfficerModal={handleOpenOfficer}
       />
@@ -92,11 +140,14 @@ function PublicPortal({
         activeRegion={activeRegion}
         p2TrendHistory={p2TrendHistory}
         trendLoading={trendLoading}
+        regionStats={enrichedRegions}
+        onSelectRegion={setSelectedRegionCode}
       />
 
       <AuditLedger
         auditRecords={auditRecords}
         onSimulateDisburse={simulateDisburse}
+        onSimulateIneligible={handleSimulateIneligible}
         onSimulateDuplicate={simulateDuplicate}
         onSelectTx={setSelectedTxForModal}
       />
@@ -128,7 +179,9 @@ function PublicPortal({
         onModelVersionChange={setAiModelVersion}
         onSubmitRecord={(newRecord) => {
           addRecord(newRecord);
-          showToast(`Penyaluran ${newRecord.refId} berhasil dicatat on-chain Polygon Amoy!`);
+          showToast(
+            `Penyaluran ${newRecord.refId} berhasil dicatat on-chain Polygon Amoy!`,
+          );
         }}
       />
     </div>
@@ -158,7 +211,8 @@ export default function App() {
     useAuditLedger(wallet.address, showToast);
 
   const enrichedRegions = useMemo(() => {
-    const sourceStats = regionStats.length > 0 ? regionStats : FALLBACK_JABAR_STATS;
+    const sourceStats =
+      regionStats.length > 0 ? regionStats : FALLBACK_JABAR_STATS;
     return sourceStats.map((s) => ({
       ...s,
       laporan_verified: reportCounts[String(s.kode)] || 0,
@@ -167,12 +221,15 @@ export default function App() {
 
   const activeRegion = useMemo(
     () =>
-      enrichedRegions.find((r) => String(r.kode) === String(selectedRegionCode)) ||
-      enrichedRegions[0],
-    [enrichedRegions, selectedRegionCode]
+      enrichedRegions.find(
+        (r) => String(r.kode) === String(selectedRegionCode),
+      ) || enrichedRegions[0],
+    [enrichedRegions, selectedRegionCode],
   );
 
-  const { trend: p2TrendHistory, loading: trendLoading } = useP2Trend(activeRegion.kode);
+  const { trend: p2TrendHistory, loading: trendLoading } = useP2Trend(
+    activeRegion.kode,
+  );
 
   return (
     <Routes>
