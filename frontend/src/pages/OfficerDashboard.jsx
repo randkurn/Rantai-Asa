@@ -229,12 +229,12 @@ export default function OfficerDashboard() {
     if (isDup) {
       setVerificationFeedback({
         status: "DUPLICATE",
-        message: "SMART CONTRACT REVERT: Hash NIK sudah terdaftar pada periode berjalan (Duplikasi Terdeteksi!)."
+        message: "Ditolak: Terdeteksi Sudah Menerima Bansos! Kode rahasia warga ini sudah tercatat menerima bantuan pada periode berjalan di buku kas digital."
       });
     } else {
       setVerificationFeedback({
         status: "VALID",
-        message: "LOLOS VALIDASI REGISTRY: Hash NIK belum terdaftar. Identitas unik dan berhak diproses."
+        message: "Lolos Pemeriksaan: Warga belum pernah menerima bantuan pada periode ini. Identitas unik, sah, dan siap untuk dinilai kelayakannya."
       });
     }
   };
@@ -500,59 +500,59 @@ export default function OfficerDashboard() {
             <div className="space-y-6">
               {/* Stat Cards */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5">
-                  <span className="text-xs text-slate-400">Total Penerima Terverifikasi</span>
+                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5 shadow-sm hover:border-sky-400/40 transition">
+                  <span className="text-xs text-slate-400">Total Warga Terdata</span>
                   <div className="mt-2 font-heading text-2xl font-bold text-white">
                     {recipientList.length.toLocaleString("id-ID")}
                   </div>
-                  <span className="mt-1 block text-[11px] text-emerald-400">100% Bebas Duplikasi NIK</span>
+                  <span className="mt-1 block text-[11px] text-emerald-400 font-medium">✓ Aman, tidak ada NIK ganda</span>
                 </div>
 
-                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5">
-                  <span className="text-xs text-slate-400">Penyaluran Berhasil (On-Chain)</span>
+                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5 shadow-sm hover:border-sky-400/40 transition">
+                  <span className="text-xs text-slate-400">Bantuan Sudah Disalurkan</span>
                   <div className="mt-2 font-heading text-2xl font-bold text-sky-400">
                     {recipientList.filter((r) => r.status === "TERCATAT_CHAIN").length}
                   </div>
-                  <span className="mt-1 block text-[11px] text-slate-400">Tercatat di Smart Contract</span>
+                  <span className="mt-1 block text-[11px] text-slate-400">Tercatat di pembukuan digital</span>
                 </div>
 
-                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5">
-                  <span className="text-xs text-slate-400">Total Bantuan Tersalurkan</span>
+                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5 shadow-sm hover:border-sky-400/40 transition">
+                  <span className="text-xs text-slate-400">Total Dana Disalurkan</span>
                   <div className="mt-2 font-heading text-2xl font-bold text-white">
                     {formatIDR(recipientList.reduce((acc, curr) => acc + curr.amount, 0))}
                   </div>
-                  <span className="mt-1 block text-[11px] text-slate-400">Alokasi Wilayah Jabar</span>
+                  <span className="mt-1 block text-[11px] text-slate-400">Bantuan untuk Jawa Barat</span>
                 </div>
 
-                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5">
-                  <span className="text-xs text-slate-400">Model AI Terpasang</span>
+                <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-5 shadow-sm hover:border-sky-400/40 transition">
+                  <span className="text-xs text-slate-400">Sistem Penilaian Cerdas</span>
                   <div className="mt-2 font-mono text-sm font-bold text-emerald-400">
-                    lr-jabar-multidim-2.0
+                    Model Pintar v2.0
                   </div>
-                  <span className="mt-1 block text-[11px] text-slate-400">ROC-AUC 0.934 | 14 Fitur BPS</span>
+                  <span className="mt-1 block text-[11px] text-slate-400">Akurasi 93,4% dari data BPS</span>
                 </div>
               </div>
 
               {/* Recipient Table */}
-              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
+              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6 shadow-md">
                 <div className="mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="font-heading text-base font-bold text-white">Daftar Penerima & Status Penyaluran</h2>
-                    <p className="text-xs text-slate-400">Data bersumber dari registrasi on-chain dan penilaian kelayakan AI.</p>
+                    <h2 className="font-heading text-base font-bold text-white">Daftar Penerima &amp; Status Penyaluran</h2>
+                    <p className="text-xs text-slate-400">Daftar warga penerima yang sudah dicek kelayakannya secara otomatis.</p>
                   </div>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Cari ID, Wilayah, Hash..."
+                      placeholder="Cari kode warga, kota, status..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="rounded-xl border border-white/10 bg-[#030910] px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:border-sky-400 focus:outline-none"
                     />
                     <button
                       onClick={() => setActiveMenu("registrasi")}
-                      className="rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-4 py-1.5 text-xs font-semibold text-white hover:brightness-110"
+                      className="rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-4 py-1.5 text-xs font-semibold text-white hover:brightness-110 shadow-sm"
                     >
-                      + Registrasi Baru
+                      + Tambah Warga Baru
                     </button>
                   </div>
                 </div>
@@ -561,33 +561,33 @@ export default function OfficerDashboard() {
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-white/10 font-mono text-[11px] text-slate-400">
-                        <th className="py-3 px-4">Ref ID</th>
-                        <th className="py-3 px-4">NIK (Masked)</th>
+                        <th className="py-3 px-4">No. Registrasi</th>
+                        <th className="py-3 px-4">NIK (Sensor Aman)</th>
                         <th className="py-3 px-4">Kab/Kota</th>
-                        <th className="py-3 px-4">Program</th>
-                        <th className="py-3 px-4">Skor AI</th>
+                        <th className="py-3 px-4">Program Bansos</th>
+                        <th className="py-3 px-4">Skor Kelayakan</th>
                         <th className="py-3 px-4">Status</th>
                         <th className="py-3 px-4">Nominal</th>
-                        <th className="py-3 px-4">Tx Hash</th>
+                        <th className="py-3 px-4">Bukti Transaksi</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       {filteredRecipients.map((rec) => (
-                        <tr key={rec.id} className="hover:bg-white/[0.02]">
+                        <tr key={rec.id} className="hover:bg-white/[0.02] transition">
                           <td className="py-3 px-4 font-mono font-semibold text-white">{rec.id}</td>
                           <td className="py-3 px-4 font-mono text-slate-300">{rec.nikMasked}</td>
                           <td className="py-3 px-4 text-slate-300">{rec.regionName}</td>
                           <td className="py-3 px-4 font-mono text-sky-300">{rec.program}</td>
                           <td className="py-3 px-4">
-                            <span className={`rounded px-1.5 py-0.5 font-mono font-bold text-[10px] ${
-                              rec.aiScore >= 60 ? "bg-emerald-500/15 text-emerald-400" : "bg-rose-500/15 text-rose-400"
+                            <span className={`rounded-full px-2.5 py-0.5 font-mono font-bold text-[11px] ${
+                              rec.aiScore >= 60 ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
                             }`}>
-                              {rec.aiScore} ({rec.aiStatus})
+                              {rec.aiScore}/100 ({rec.aiStatus === "ELIGIBLE" ? "LAYAK" : "TIDAK LAYAK"})
                             </span>
                           </td>
                           <td className="py-3 px-4">
                             <span className="rounded-full border border-sky-400/30 bg-sky-950/40 px-2.5 py-0.5 text-[10px] font-semibold text-sky-300">
-                              {rec.status}
+                              {rec.status === "TERCATAT_CHAIN" ? "Sudah Diterima" : rec.status === "MENUNGGU_PENYALURAN" ? "Menunggu Cair" : "Ditolak Sistem"}
                             </span>
                           </td>
                           <td className="py-3 px-4 font-semibold text-white">{formatIDR(rec.amount)}</td>
@@ -604,16 +604,19 @@ export default function OfficerDashboard() {
           {/* 2. REGISTRASI PENERIMA */}
           {activeMenu === "registrasi" && (
             <div className="max-w-3xl space-y-6">
-              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
+              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6 shadow-md">
                 <div className="mb-6">
-                  <h2 className="font-heading text-lg font-bold text-white">Registrasi Identitas Penerima Bantuan</h2>
-                  <p className="text-xs text-slate-400">
-                    Proses konversi NIK menjadi pseudonym cryptographic hash (HMAC-SHA256) sebelum didaftarkan on-chain.
+                  <h2 className="font-heading text-lg font-bold text-white">Daftarkan Warga Penerima Bantuan</h2>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Masukkan data warga untuk diperiksa kerahasiaan dan kepemilikan bantuannya secara aman.
                   </p>
                 </div>
 
-                <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-200">
-                  <strong>Privasi Keras:</strong> NIK 16 digit asli hanya diproses di volatile memory petugas dan tidak pernah disimpan di database atau blockchain.
+                <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-200 flex items-start gap-2.5">
+                  <span className="text-base leading-none">🔒</span>
+                  <div>
+                    <strong>Privasi 100% Terlindungi:</strong> NIK warga disamarkan otomatis menjadi kode acak aman. NIK asli tidak pernah disimpan di internet maupun database publik.
+                  </div>
                 </div>
 
                 <form onSubmit={handleGeneratePseudonym} className="space-y-4 text-xs">
@@ -629,10 +632,11 @@ export default function OfficerDashboard() {
                         placeholder="Contoh: 3201012304920005"
                         className="w-full rounded-xl border border-white/10 bg-[#030910] px-3.5 py-2.5 font-mono text-white focus:border-sky-400 focus:outline-none"
                       />
+                      <span className="text-[10px] text-slate-500 mt-1 block">Wajib 16 digit angka sesuai KTP/KK</span>
                     </div>
 
                     <div>
-                      <label className="mb-1 block font-semibold text-slate-300">Kabupaten/Kota (Jawa Barat)</label>
+                      <label className="mb-1 block font-semibold text-slate-300">Kabupaten/Kota Tempat Tinggal</label>
                       <select
                         value={selectedRegion}
                         onChange={(e) => setSelectedRegion(e.target.value)}
@@ -640,22 +644,22 @@ export default function OfficerDashboard() {
                       >
                         {Object.entries(REGION_NAMES).map(([code, name]) => (
                           <option key={code} value={code}>
-                            {code} - {name}
+                            {name} ({code})
                           </option>
                         ))}
                       </select>
                     </div>
 
                     <div>
-                      <label className="mb-1 block font-semibold text-slate-300">Program Bantuan Sosial</label>
+                      <label className="mb-1 block font-semibold text-slate-300">Jenis Bantuan yang Diajukan</label>
                       <select
                         value={selectedProgram}
                         onChange={(e) => setSelectedProgram(e.target.value)}
                         className="w-full rounded-xl border border-white/10 bg-[#030910] px-3.5 py-2.5 text-white focus:border-sky-400 focus:outline-none"
                       >
-                        <option value="PKH-2026-P1">Program Keluarga Harapan (PKH - Rp 750.000)</option>
-                        <option value="BPNT-2026-P1">Bantuan Pangan Non-Tunai (BPNT - Rp 600.000)</option>
-                        <option value="BERAS-2026-P1">Bantuan Beras Cadangan Pangan (Rp 300.000)</option>
+                        <option value="PKH-2026-P1">PKH - Program Keluarga Harapan (Rp 750.000)</option>
+                        <option value="BPNT-2026-P1">BPNT - Bantuan Pangan Sembako (Rp 600.000)</option>
+                        <option value="BERAS-2026-P1">Bantuan Cadangan Beras (Rp 300.000)</option>
                       </select>
                     </div>
 
@@ -664,7 +668,7 @@ export default function OfficerDashboard() {
                       <input
                         type="text"
                         disabled
-                        value="Periode 1 - Tahun Anggaran 2026"
+                        value="Tahap 1 - Tahun Anggaran 2026"
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-slate-400 cursor-not-allowed"
                       />
                     </div>
@@ -676,21 +680,21 @@ export default function OfficerDashboard() {
                       disabled={isHashing}
                       className="rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-5 py-2.5 font-bold text-white shadow hover:brightness-110 disabled:opacity-50"
                     >
-                      {isHashing ? "Memproses Hash..." : "Generate Identity Hash (HMAC-SHA256)"}
+                      {isHashing ? "Sedang Mengamankan Kode..." : "Buat Kode Rahasia Warga (Amankan NIK)"}
                     </button>
                   </div>
                 </form>
 
                 {pseudonymHash && (
                   <div className="mt-6 rounded-xl border border-sky-400/30 bg-sky-950/20 p-4">
-                    <span className="font-mono text-[10px] text-sky-400 uppercase">Hasil Identity Hash Siap Daftar:</span>
+                    <span className="font-mono text-[10px] text-sky-400 uppercase">Kode Rahasia Warga (Siap Diverifikasi):</span>
                     <p className="mt-1 break-all font-mono text-xs font-bold text-white">{pseudonymHash}</p>
                     <div className="mt-3 flex gap-2">
                       <button
                         onClick={() => setActiveMenu("verifikasi")}
                         className="rounded-lg bg-sky-500/20 px-3 py-1.5 font-semibold text-sky-300 hover:bg-sky-500/30"
                       >
-                        Lanjut ke Verifikasi Identitas →
+                        Lanjut: Cek Apakah Pernah Menerima →
                       </button>
                     </div>
                   </div>
@@ -702,22 +706,22 @@ export default function OfficerDashboard() {
           {/* 3. VERIFIKASI IDENTITAS */}
           {activeMenu === "verifikasi" && (
             <div className="max-w-3xl space-y-6">
-              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
+              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6 shadow-md">
                 <div className="mb-6">
-                  <h2 className="font-heading text-lg font-bold text-white">Verifikasi Anti-Duplikasi Identitas</h2>
-                  <p className="text-xs text-slate-400">
-                    Memeriksa ke smart contract <code className="font-mono text-sky-300">IdentityRegistry.sol</code> apakah hash NIK ini sudah pernah menerima bantuan pada periode berjalan.
+                  <h2 className="font-heading text-lg font-bold text-white">Pemeriksaan Penerima Ganda</h2>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Mengecek otomatis ke sistem apakah warga ini sudah pernah terdaftar menerima bansos pada periode yang sama.
                   </p>
                 </div>
 
                 <div className="space-y-4 text-xs">
                   <div>
-                    <label className="mb-1 block font-semibold text-slate-300">Identity Hash Penerima</label>
+                    <label className="mb-1 block font-semibold text-slate-300">Kode Rahasia Warga</label>
                     <input
                       type="text"
                       value={pseudonymHash}
                       onChange={(e) => setPseudonymHash(e.target.value)}
-                      placeholder="0x..."
+                      placeholder="Masukkan kode rahasia atau buat di menu registrasi"
                       className="w-full rounded-xl border border-white/10 bg-[#030910] px-3.5 py-2.5 font-mono text-white focus:border-sky-400 focus:outline-none"
                     />
                   </div>
@@ -726,7 +730,7 @@ export default function OfficerDashboard() {
                     onClick={handleVerifyDuplicate}
                     className="rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-5 py-2.5 font-bold text-white shadow hover:brightness-110"
                   >
-                    Cek Status Duplikasi On-Chain
+                    Periksa Status Duplikasi Sekarang
                   </button>
 
                   {verificationFeedback && (
@@ -737,14 +741,17 @@ export default function OfficerDashboard() {
                           : "border-rose-500/30 bg-rose-500/10 text-rose-300"
                       }`}
                     >
-                      <div className="font-bold">{verificationFeedback.status === "VALID" ? "✓ Terverifikasi Bersih" : "✕ Ditolak Kontrak"}</div>
+                      <div className="font-bold flex items-center gap-1.5">
+                        <span>{verificationFeedback.status === "VALID" ? "✓" : "✕"}</span>
+                        <span>{verificationFeedback.status === "VALID" ? "Warga Bersih & Belum Pernah Terima" : "Ditolak: Terdeteksi Sudah Menerima"}</span>
+                      </div>
                       <p className="mt-1 leading-relaxed">{verificationFeedback.message}</p>
                       {verificationFeedback.status === "VALID" && (
                         <button
                           onClick={() => setActiveMenu("penilaian-ai")}
-                          className="mt-3 rounded-lg bg-emerald-500/20 px-3 py-1.5 font-semibold text-emerald-300 hover:bg-emerald-500/30"
+                          className="mt-3 rounded-lg bg-emerald-500/20 px-3.5 py-1.5 font-semibold text-emerald-300 hover:bg-emerald-500/30"
                         >
-                          Lanjut ke Penilaian Kelayakan AI →
+                          Lanjut: Nilai Kelayakan Bantuan →
                         </button>
                       )}
                     </div>
@@ -757,23 +764,23 @@ export default function OfficerDashboard() {
           {/* 4. PENILAIAN KELAYAKAN AI */}
           {activeMenu === "penilaian-ai" && (
             <div className="max-w-4xl space-y-6">
-              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
+              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6 shadow-md">
                 <div className="mb-6 flex items-center justify-between">
                   <div>
-                    <h2 className="font-heading text-lg font-bold text-white">Penilaian Kelayakan AI Multidimensi</h2>
-                    <p className="text-xs text-slate-400">
-                      Evaluasi 14 fitur kemiskinan multidimensi BPS Jawa Barat dengan Logistic Regression terkalibrasi.
+                    <h2 className="font-heading text-lg font-bold text-white">Penilaian Kelayakan Otomatis (Cerdas &amp; Objektif)</h2>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Sistem menghitung tingkat kebutuhan keluarga berdasarkan 14 data kondisi riil warga dan standar BPS Jawa Barat.
                     </p>
                   </div>
                   <span className="rounded-full border border-sky-400/30 bg-sky-950/40 px-3 py-1 font-mono text-xs text-sky-300">
-                    Model: {aiScoreResult.modelVersion}
+                    Sistem: Penilaian Pintar Jabar
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 text-xs">
                   <div className="space-y-4">
                     <div>
-                      <label className="mb-1 block font-semibold text-slate-300">Jumlah Anggota Keluarga: {aiForm.household_size} Jiwa</label>
+                      <label className="mb-1 block font-semibold text-slate-300">Jumlah Tanggungan Keluarga: {aiForm.household_size} Orang</label>
                       <input
                         type="range"
                         min="1"
@@ -782,19 +789,24 @@ export default function OfficerDashboard() {
                         onChange={(e) => setAiForm({ ...aiForm, household_size: e.target.value })}
                         className="w-full accent-sky-400"
                       />
+                      <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+                        <span>1 orang</span>
+                        <span>6 orang</span>
+                        <span>12 orang</span>
+                      </div>
                     </div>
 
                     <div>
-                      <label className="mb-1 block font-semibold text-slate-300">Pita Pengeluaran Per Kapita</label>
+                      <label className="mb-1 block font-semibold text-slate-300">Penghasilan Rata-rata Keluarga</label>
                       <select
                         value={aiForm.income_per_capita_band}
                         onChange={(e) => setAiForm({ ...aiForm, income_per_capita_band: e.target.value })}
                         className="w-full rounded-xl border border-white/10 bg-[#030910] p-2.5 text-white"
                       >
-                        <option value="1">Band 1 (&lt; 0.8x Garis Kemiskinan Wilayah)</option>
-                        <option value="2">Band 2 (0.8x - 1.2x Garis Kemiskinan)</option>
-                        <option value="3">Band 3 (1.2x - 2.0x Garis Kemiskinan)</option>
-                        <option value="4">Band 4 (&gt; 2.0x Garis Kemiskinan)</option>
+                        <option value="1">Sangat Rendah (Jauh di bawah garis kecukupan wilayah)</option>
+                        <option value="2">Rendah (Pas-pasan mendekati garis kecukupan)</option>
+                        <option value="3">Cukup (Sedikit di atas garis kecukupan)</option>
+                        <option value="4">Mampu / Sejahtera (Jauh di atas garis kecukupan)</option>
                       </select>
                     </div>
 
@@ -805,9 +817,9 @@ export default function OfficerDashboard() {
                         onChange={(e) => setAiForm({ ...aiForm, housing_quality: e.target.value })}
                         className="w-full rounded-xl border border-white/10 bg-[#030910] p-2.5 text-white"
                       >
-                        <option value="1">Lantai Tanah / Dinding Bambu / Tanpa Sanitasi Layak</option>
-                        <option value="2">Semi Permanen / Sanitasi Bersama</option>
-                        <option value="3">Permanen / Sanitasi Pribadi Lengkap</option>
+                        <option value="1">Tidak Layak (Lantai tanah / dinding anyaman bambu / tanpa toilet pribadi)</option>
+                        <option value="2">Cukup Layak (Semi permanen / toilet bersama)</option>
+                        <option value="3">Layak &amp; Permanen (Tembok semen / keramik / toilet sendiri)</option>
                       </select>
                     </div>
 
@@ -819,7 +831,7 @@ export default function OfficerDashboard() {
                           onChange={(e) => setAiForm({ ...aiForm, has_disabled_or_elderly: e.target.checked })}
                           className="h-4 w-4 rounded accent-sky-400"
                         />
-                        <span>Memiliki Anggota Rentan (Disabilitas Berat / Lansia &gt; 60 Thn)</span>
+                        <span>Ada anggota keluarga lansia (&gt;60 thn) atau penyandang disabilitas</span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer text-slate-300">
@@ -829,7 +841,7 @@ export default function OfficerDashboard() {
                           onChange={(e) => setAiForm({ ...aiForm, head_unemployed: e.target.checked })}
                           className="h-4 w-4 rounded accent-sky-400"
                         />
-                        <span>Kepala Keluarga Menganggur / Pekerja Lepas Tak Menentu</span>
+                        <span>Kepala keluarga menganggur atau kerja serabutan tanpa gaji tetap</span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer text-rose-300 font-semibold">
@@ -839,7 +851,7 @@ export default function OfficerDashboard() {
                           onChange={(e) => setAiForm({ ...aiForm, is_civil_servant_or_security: e.target.checked })}
                           className="h-4 w-4 rounded accent-rose-500"
                         />
-                        <span>Eksklusi: Anggota Keluarga ASN / TNI / Polri (Otomatis Drop)</span>
+                        <span>Keluarga ASN / TNI / Polri (Otomatis tidak boleh menerima)</span>
                       </label>
                     </div>
                   </div>
@@ -847,7 +859,7 @@ export default function OfficerDashboard() {
                   {/* Realtime Score Output Card */}
                   <div className="flex flex-col justify-between rounded-2xl border border-sky-400/30 bg-[#030910] p-6 shadow-inner">
                     <div>
-                      <span className="font-mono text-xs text-slate-400">Hasil Penilaian AI Engine:</span>
+                      <span className="font-mono text-xs text-slate-400">Hasil Penilaian Kelayakan:</span>
                       <div className="mt-3 flex items-baseline gap-2">
                         <span className="font-heading text-6xl font-extrabold text-white">
                           {isScoring ? "..." : aiScoreResult.score}
@@ -858,17 +870,17 @@ export default function OfficerDashboard() {
                             ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
                             : "border-rose-500/30 bg-rose-500/10 text-rose-400"
                         }`}>
-                          {aiScoreResult.label}
+                          {aiScoreResult.label === "ELIGIBLE" ? "LAYAK MENERIMA" : "TIDAK LAYAK"}
                         </span>
                       </div>
 
                       <div className="mt-4">
-                        <span className="font-mono text-[10px] text-slate-400">Atribusi Faktor Dominan:</span>
+                        <span className="font-mono text-[10px] text-slate-400">Alasan Utama Penilaian:</span>
                         <div className="mt-2 space-y-1.5 font-mono text-xs">
                           {aiScoreResult.factors.map((f, idx) => (
                             <div key={idx} className="flex items-center gap-2 rounded-lg bg-white/5 p-2">
                               <span className={f.impact === "+" ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
-                                {f.impact}
+                                {f.impact === "+" ? "▲ Membutuhkan" : "▼ Tidak Membutuhkan"}
                               </span>
                               <span className="text-slate-300">{f.name}</span>
                             </div>
@@ -879,14 +891,14 @@ export default function OfficerDashboard() {
 
                     <div className="mt-6 border-t border-white/10 pt-4">
                       <p className="text-[11px] text-slate-400 mb-3">
-                        Ambang batas kontrak on-chain adalah skor ≥ 60.
+                        Standar penerimaan bansos adalah nilai kelayakan minimal <strong>60 ke atas</strong>.
                       </p>
                       <button
                         disabled={aiScoreResult.score < 60}
                         onClick={() => setActiveMenu("penyaluran")}
                         className="w-full rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] py-2.5 font-bold text-white shadow hover:brightness-110 disabled:opacity-40"
                       >
-                        Lanjut ke Eksekusi Penyaluran →
+                        Lanjut: Salurkan Dana Bantuan →
                       </button>
                     </div>
                   </div>
@@ -898,37 +910,37 @@ export default function OfficerDashboard() {
           {/* 5. PENYALURAN BANTUAN */}
           {activeMenu === "penyaluran" && (
             <div className="max-w-2xl space-y-6">
-              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
+              <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6 shadow-md">
                 <div className="mb-6">
-                  <h2 className="font-heading text-lg font-bold text-white">Eksekusi Penyaluran On-Chain</h2>
-                  <p className="text-xs text-slate-400">
-                    Memanggil fungsi <code className="font-mono text-sky-300">disburseAid()</code> pada smart contract Polygon Amoy.
+                  <h2 className="font-heading text-lg font-bold text-white">Konfirmasi &amp; Penyaluran Dana Bansos</h2>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Catat penyerahan bantuan secara permanen di buku kas digital yang tidak bisa dimanipulasi siapa pun.
                   </p>
                 </div>
 
                 <div className="space-y-4 rounded-xl border border-white/10 bg-[#030910] p-4 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Wilayah Sasaran:</span>
+                    <span className="text-slate-400">Kota/Kabupaten:</span>
                     <span className="font-semibold text-white">{selectedRegion} - {REGION_NAMES[parseInt(selectedRegion)]}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Program:</span>
+                    <span className="text-slate-400">Program Bansos:</span>
                     <span className="font-semibold text-white">{selectedProgram}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Besaran Dana:</span>
+                    <span className="text-slate-400">Nominal yang Diserahkan:</span>
                     <span className="font-heading font-bold text-sky-400 text-sm">
                       {formatIDR(selectedProgram.startsWith("PKH") ? 750000 : 600000)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Identity Hash:</span>
+                    <span className="text-slate-400">Kode Rahasia Warga:</span>
                     <span className="font-mono text-[11px] text-sky-300">
                       {pseudonymHash ? shortHex(pseudonymHash) : "Belum di-generate"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Petugas Penyalur:</span>
+                    <span className="text-slate-400">Petugas yang Bertanggung Jawab:</span>
                     <span className="font-mono text-[11px] text-slate-300">{officer?.wallet || "0xDebE...F3bf"}</span>
                   </div>
                 </div>
@@ -939,7 +951,7 @@ export default function OfficerDashboard() {
                     onClick={handleExecuteDisbursement}
                     className="rounded-xl bg-gradient-to-r from-[#479ece] to-[#2c7fb0] px-6 py-3 font-bold text-white shadow-lg hover:brightness-110 disabled:opacity-40"
                   >
-                    Kirim Transaksi Penyaluran (Disburse)
+                    Resmikan Penyaluran &amp; Catat Transaksi
                   </button>
                 </div>
               </div>
@@ -952,12 +964,12 @@ export default function OfficerDashboard() {
               <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
                 <div className="mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                   <div>
-                    <h2 className="font-heading text-base font-bold text-white">Log Aktivitas & Transaksi Penyaluran</h2>
-                    <p className="text-xs text-slate-400">Audit trail lengkap seluruh aktivitas penyaluran di Jawa Barat.</p>
+                    <h2 className="font-heading text-base font-bold text-white">Riwayat Aktivitas & Bukti Penyaluran</h2>
+                    <p className="text-xs text-slate-400">Catatan riwayat lengkap penyaluran bantuan di Jawa Barat yang tercatat aman dan transparan.</p>
                   </div>
                   <input
                     type="text"
-                    placeholder="Pencarian cepat nomor ref atau tx hash..."
+                    placeholder="Pencarian cepat nomor bukti (Ref ID) atau hash transaksi..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="rounded-xl border border-white/10 bg-[#030910] px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:border-sky-400 focus:outline-none"
@@ -969,12 +981,12 @@ export default function OfficerDashboard() {
                     <thead>
                       <tr className="border-b border-white/10 font-mono text-[11px] text-slate-400">
                         <th className="py-3 px-3">Waktu</th>
-                        <th className="py-3 px-3">Ref ID</th>
-                        <th className="py-3 px-3">Kab/Kota</th>
-                        <th className="py-3 px-3">Program</th>
-                        <th className="py-3 px-3">Status</th>
-                        <th className="py-3 px-3">Nominal</th>
-                        <th className="py-3 px-3">Tx Hash</th>
+                        <th className="py-3 px-3">Nomor Bukti (Ref ID)</th>
+                        <th className="py-3 px-3">Wilayah</th>
+                        <th className="py-3 px-3">Program Bantuan</th>
+                        <th className="py-3 px-3">Status Catatan</th>
+                        <th className="py-3 px-3">Dana Bantuan</th>
+                        <th className="py-3 px-3">Bukti Digital (Blockchain)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -986,7 +998,7 @@ export default function OfficerDashboard() {
                           <td className="py-3 px-3 font-mono text-sky-300">{rec.program}</td>
                           <td className="py-3 px-3">
                             <span className="rounded-full border border-sky-400/30 bg-sky-950/40 px-2 py-0.5 text-[10px] text-sky-300 font-semibold">
-                              {rec.status}
+                              {rec.status === "TERCATAT_CHAIN" ? "Tersalurkan & Tercatat" : rec.status}
                             </span>
                           </td>
                           <td className="py-3 px-3 font-semibold text-white">{formatIDR(rec.amount)}</td>
@@ -1018,16 +1030,16 @@ export default function OfficerDashboard() {
             <div className="space-y-6">
               <div className="rounded-2xl border border-sky-400/20 bg-[#07131d] p-6">
                 <div className="mb-6">
-                  <h2 className="font-heading text-lg font-bold text-white">Smart Contract & Explorer</h2>
+                  <h2 className="font-heading text-lg font-bold text-white">Buku Kas Digital (Smart Contract Explorer)</h2>
                   <p className="text-xs text-slate-400">
-                    Informasi kontrak pintar resmi RantaiAsa yang beroperasi di jaringan Polygon Amoy Testnet.
+                    Informasi kontrak pintar resmi RantaiAsa yang beroperasi di jaringan Polygon Amoy. Seluruh pencatatan bansos berjalan transparan dan tidak dapat dimanipulasi.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 text-xs">
                   <div className="rounded-xl border border-white/10 bg-[#030910] p-4">
-                    <span className="font-mono text-slate-400 text-[10px]">CONTRACT 1</span>
-                    <h3 className="font-bold text-white mt-1">IdentityRegistry</h3>
+                    <span className="font-mono text-slate-400 text-[10px]">KONTRAK 1</span>
+                    <h3 className="font-bold text-white mt-1">IdentityRegistry (Pendaftaran Kode Warga)</h3>
                     <p className="font-mono text-[11px] text-sky-300 mt-2 break-all">
                       0x964C5ACaEf0FFb0866bb0a0EFF55cA87BF39dD84
                     </p>
@@ -1037,13 +1049,13 @@ export default function OfficerDashboard() {
                       rel="noreferrer"
                       className="mt-3 inline-block font-semibold text-sky-400 hover:underline"
                     >
-                      Buka di Polygonscan ↗
+                      Periksa di Polygonscan ↗
                     </a>
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-[#030910] p-4">
-                    <span className="font-mono text-slate-400 text-[10px]">CONTRACT 2</span>
-                    <h3 className="font-bold text-white mt-1">AidDisbursement</h3>
+                    <span className="font-mono text-slate-400 text-[10px]">KONTRAK 2</span>
+                    <h3 className="font-bold text-white mt-1">AidDisbursement (Penyaluran Dana Bansos)</h3>
                     <p className="font-mono text-[11px] text-sky-300 mt-2 break-all">
                       0xDd9E6cffA4DEB9493D6406A839480673Af13859D
                     </p>
@@ -1053,13 +1065,13 @@ export default function OfficerDashboard() {
                       rel="noreferrer"
                       className="mt-3 inline-block font-semibold text-sky-400 hover:underline"
                     >
-                      Buka di Polygonscan ↗
+                      Periksa di Polygonscan ↗
                     </a>
                   </div>
 
                   <div className="rounded-xl border border-white/10 bg-[#030910] p-4">
-                    <span className="font-mono text-slate-400 text-[10px]">CONTRACT 3</span>
-                    <h3 className="font-bold text-white mt-1">ReportRegistry</h3>
+                    <span className="font-mono text-slate-400 text-[10px]">KONTRAK 3</span>
+                    <h3 className="font-bold text-white mt-1">ReportRegistry (Pengaduan Warga Terbuka)</h3>
                     <p className="font-mono text-[11px] text-sky-300 mt-2 break-all">
                       0x8b6aEf6e43B5e028af2d1b606Ec2Ee14837D291d
                     </p>
@@ -1069,7 +1081,7 @@ export default function OfficerDashboard() {
                       rel="noreferrer"
                       className="mt-3 inline-block font-semibold text-sky-400 hover:underline"
                     >
-                      Buka di Polygonscan ↗
+                      Periksa di Polygonscan ↗
                     </a>
                   </div>
                 </div>
@@ -1093,15 +1105,15 @@ export default function OfficerDashboard() {
 
                 <div className="space-y-3 rounded-xl border border-white/10 bg-[#030910] p-4 text-xs font-mono">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">NIP:</span>
+                    <span className="text-slate-400">NIP Petugas:</span>
                     <span className="text-white">{officer?.nip || "19880415 201201 1 002"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Role Sistem:</span>
+                    <span className="text-slate-400">Peran Sistem:</span>
                     <span className="text-emerald-400 font-bold">{officer?.role || "Petugas Verifikator Wilayah"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Alamat Wallet Terverifikasi:</span>
+                    <span className="text-slate-400">Identitas Digital Petugas (Wallet):</span>
                     <span className="text-sky-300 break-all">{officer?.wallet || "0xDebE39681c91F60C010d7C66e443770cf85dF3bf"}</span>
                   </div>
                   <div className="flex justify-between">
@@ -1110,7 +1122,7 @@ export default function OfficerDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Status Autentikasi:</span>
-                    <span className="text-emerald-400 font-bold">ACTIVE & SIGNED</span>
+                    <span className="text-emerald-400 font-bold">Aktif &amp; Terverifikasi</span>
                   </div>
                 </div>
 
@@ -1122,7 +1134,7 @@ export default function OfficerDashboard() {
                     }}
                     className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 font-semibold text-rose-300 hover:bg-rose-500/20"
                   >
-                    Keluar Sesi Petugas
+                    Keluar dari Sesi Petugas
                   </button>
                 </div>
               </div>

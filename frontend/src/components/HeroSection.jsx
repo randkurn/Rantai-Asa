@@ -41,19 +41,49 @@ export default function HeroSection({
 }) {
   const { isDark } = useTheme();
   const [typedText, setTypedText] = useState("");
-  const tagline =
-    "Wujudkan bantuan sosial yang transparan dan bebas penerima ganda";
+  const TAGLINES = [
+    "Wujudkan bantuan sosial transparan & bebas penerima ganda.",
+    "Satu identitas, tepat sasaran, tanpa data ganda.",
+    "Bantuan sampai ke warga yang benar-benar membutuhkan.",
+    "Setiap rupiah tercatat terbuka di audit publik."
+  ];
 
-  // Warna target gradasi mengikuti tema aktif (#050f18 di mode gelap, #ffffff di mode terang)
   const fadeRgb = isDark ? "5, 15, 24" : "255, 255, 255";
 
   useEffect(() => {
-    let idx = 0;
-    const timer = setInterval(() => {
-      setTypedText(tagline.slice(0, idx++));
-      if (idx > tagline.length) clearInterval(timer);
-    }, 45);
-    return () => clearInterval(timer);
+    let sentenceIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let currentTimer = null;
+
+    const tick = () => {
+      const fullText = TAGLINES[sentenceIdx];
+
+      if (!isDeleting) {
+        setTypedText(fullText.slice(0, charIdx + 1));
+        charIdx++;
+        if (charIdx === fullText.length) {
+          // Pause sejenak saat kalimat selesai (1.8 detik)
+          isDeleting = true;
+          currentTimer = setTimeout(tick, 1800);
+          return;
+        }
+        currentTimer = setTimeout(tick, 35); // Kecepatan mengetik cepat & smooth
+      } else {
+        setTypedText(fullText.slice(0, charIdx - 1));
+        charIdx--;
+        if (charIdx === 0) {
+          isDeleting = false;
+          sentenceIdx = (sentenceIdx + 1) % TAGLINES.length;
+          currentTimer = setTimeout(tick, 300);
+          return;
+        }
+        currentTimer = setTimeout(tick, 18); // Kecepatan menghapus gesit
+      }
+    };
+
+    currentTimer = setTimeout(tick, 400);
+    return () => clearTimeout(currentTimer);
   }, []);
 
   const currentMetric = METRICS.find((m) => m.key === mapMetric) || METRICS[0];
@@ -131,6 +161,8 @@ export default function HeroSection({
             background: "transparent",
             border: "none",
             boxShadow: "none",
+            isolation: "isolate",
+            zIndex: 1,
           }}
         >
           <style>{`

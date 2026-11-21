@@ -1,8 +1,30 @@
 # STATUS / LAST STATE — 21 Nov 2026 (Penyelesaian Komprehensif Selaras Master PDF 18 Dokumen)
 
-## SELESAI sesi ini (Sesuai Referensi Master PDF LFT COMPSPHERE 2026)
+## SELESAI sesi ini:
 
-### 1. Sinkronisasi API Gateway & Database Off-Chain (Doc 07 — Hal. 26-29) ✅
+### 1. Perbaikan Bug Tumpukan Tampilan Modal Petugas & Navbar ✅
+- **Stacking Context & Isolasi CSS**:
+  - Memberikan `isolation: isolate` dan `z-index: 1` pada `#jabar-map-wrapper` (`HeroSection.jsx`) sehingga seluruh kontrol dan layer peta Leaflet terisolasi rapi di lapisan bawah.
+  - Memperbarui `OfficerLoginModal.jsx` ke `z-index: 40` dengan `pt-20`, sehingga modal berada tepat di bawah Navbar (`z-50`), namun menutupi penuh seluruh elemen peta tanpa ada tombol atau tooltip peta yang bocor menembus modal.
+
+### 2. Optimalisasi Bahasa Ramah Warga & Petugas (Officer Dashboard) ✅
+- Menyederhanakan istilah teknis kriptografi dan smart contract menjadi bahasa Indonesia yang mudah dipahami:
+  - *"Pseudonimisasi Kriptografis"* ➔ *"Kode Rahasia Warga (Amankan NIK)"*
+  - *"SMART CONTRACT REVERT"* ➔ *"Ditolak: Terdeteksi Sudah Menerima Bansos! Kode rahasia warga sudah tercatat pada periode berjalan di buku kas digital."*
+  - *"LOLOS VALIDASI REGISTRY"* ➔ *"Lolos Pemeriksaan: Warga belum pernah menerima bantuan pada periode ini. Identitas sah dan siap dinilai kelayakannya."*
+  - *"Smart Contract & Explorer"* ➔ *"Buku Kas Digital (Smart Contract Explorer)"*
+  - *"Log Aktivitas & Audit Trail"* ➔ *"Riwayat Aktivitas & Bukti Penyaluran"*
+  - Kolom tabel disesuaikan: *Nomor Bukti (Ref ID), Wilayah, Program Bantuan, Status Catatan, Dana Bantuan, Bukti Digital (Blockchain)*.
+
+### 3. Animasi Tagline Interaktif Dinamis di Hero Section ✅
+- Mengganti teks statis dengan 4 kalimat bersiklus dinamis yang cepat dan gesit:
+  1. *"Wujudkan bantuan sosial transparan & bebas penerima ganda."*
+  2. *"Satu identitas, tepat sasaran, tanpa data ganda."*
+  3. *"Bantuan sampai ke warga yang benar-benar membutuhkan."*
+  4. *"Setiap rupiah tercatat terbuka di audit publik."*
+- Kecepatan ketik: 35ms/karakter, jeda saat selesai 1.8 detik, dan hapus gesit 18ms/karakter.
+
+### 4. Sinkronisasi API Gateway & Database Off-Chain (Doc 07 — Hal. 26-29) ✅
 - **Penambahan Seluruh Endpoint Resmi**:
   - `POST /recipients`: Merekam referensi identitas penerima off-chain (`refCode`, `identityHash`, `regTxHash`, status `REGISTERED`).
   - `POST /disbursements`: Merekam transaksi pencatatan penyaluran on-chain (`refCode`, `txHash`, nominal) cermin event smart contract.

@@ -31,7 +31,7 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-start justify-center bg-[#030910]/85 p-4 pt-20 backdrop-blur-md" style={{ zIndex: 29 }}>
+    <div className="fixed inset-0 flex items-start justify-center bg-[#030910]/85 p-4 pt-20 backdrop-blur-md" style={{ zIndex: 40 }}>
       <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-sky-400/30 bg-[#07131d] p-6 shadow-2xl sm:p-8">
         
         {/* Glow corner */}
