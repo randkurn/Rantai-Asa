@@ -1,31 +1,30 @@
-# STATUS / LAST STATE — 21 Nov 2026 (Fitur Dashboard & Autentikasi Petugas Terpadu)
+# STATUS / LAST STATE — 21 Nov 2026 (Penyelesaian Komprehensif Selaras Master PDF 18 Dokumen)
 
-## SELESAI sesi ini
+## SELESAI sesi ini (Sesuai Referensi Master PDF LFT COMPSPHERE 2026)
 
-### Dashboard & Login Sistem Petugas Operasional Bantuan (RantaiAsa Officer Portal) ✅
-- **Sistem Autentikasi Petugas (`AuthContext.jsx` & `OfficerLoginModal.jsx`)**:
-  - Mendukung dua metode login:
-    1. **Web3 Wallet Signature (EIP-191)**: Menggunakan wallet ber-role `OFFICER` (sinkron dengan `backend/src/index.js` endpoint `/auth/nonce` dan `/auth/verify`).
-    2. **NIP & Kredensial Petugas**: Memudahkan simulasi verifikator dinas sosial di lapangan.
-  - Sesi otomatis disimpan aman di `localStorage` (`token` & profil petugas).
-- **Halaman Dashboard Terpadu (`pages/OfficerDashboard.jsx`)**:
-  - **OPERASIONAL BANTUAN**:
-    - **Data Penerima**: Tabel status verifikasi, agregat KPI nominal tersalurkan, dan skor kelayakan AI.
-    - **Registrasi Penerima**: Input NIK 16 digit, pemilihan 27 Kab/Kota Jawa Barat, dan pseudonimasi instan ke HMAC-SHA256.
-    - **Verifikasi Identitas**: Cek anti-duplikasi on-chain ke kontrak `IdentityRegistry.sol`.
-    - **Penilaian Kelayakan AI**: Evaluasi realtime 14 fitur multidimensi BPS Jawa Barat terhubung ke `http://localhost:8000/score` dengan visualisasi bobot faktor dominan.
-    - **Penyaluran Bantuan**: Eksekusi transaksi `disburseAid()` on-chain ke `AidDisbursement.sol`.
-  - **TRANSPARANSI & AUDIT**:
-    - **Riwayat Aktivitas**: Audit trail waktu, ref ID, nominal, dan status on-chain.
-    - **Pencarian Transaksi**: Filter instan berdasarkan NIK masked, Ref ID, dan Tx Hash.
-    - **Blockchain Explorer**: Tautan langsung ke kontrak Polygon Amoy (IdentityRegistry, AidDisbursement, ReportRegistry).
-  - **AKUN**:
-    - **Koneksi Wallet**: Informasi status sinkronisasi Web3 & address petugas.
-    - **Profil Petugas**: Detail NIP, role, dinas sosial, dan wilayah penugasan Jawa Barat.
-    - **Keluar**: Logout sesi aman dan redirect ke portal publik.
-- **Hasil Build & Uji**:
-  - ✅ `cd frontend; npx vite build` sukses 0 error (8.49s).
-  - ✅ `cd blockchain; .\node_modules\.bin\hardhat test` sukses (18/18 tests passing).
+### 1. Sinkronisasi API Gateway & Database Off-Chain (Doc 07 — Hal. 26-29) ✅
+- **Penambahan Seluruh Endpoint Resmi**:
+  - `POST /recipients`: Merekam referensi identitas penerima off-chain (`refCode`, `identityHash`, `regTxHash`, status `REGISTERED`).
+  - `POST /disbursements`: Merekam transaksi pencatatan penyaluran on-chain (`refCode`, `txHash`, nominal) cermin event smart contract.
+  - `GET /public/stats`: Mengembalikan statistik agregat publik (`totalRegistered`, `totalDisbursed`, `totalAmount`).
+  - `GET /public/transactions`: Menyediakan daftar transaksi penyaluran publik lengkap dengan filter `program` dan query pencarian `q`.
+  - `GET /public/programs`: Daftar program bansos aktif (PKH Rp 750k, BPNT Rp 600k, Bantuan Cadangan Beras Rp 300k).
+- **Audit Logging Off-Chain (`logAudit`)**: Mencatat setiap aksi petugas verifikator tanpa menyimpan data sensitif/PII warga.
+
+### 2. Standar Dokumentasi Repo Resmi (Doc 12 & Doc 18) ✅
+- **README.md Lengkap**:
+  - Ringkasan proyek, tautan kontrak Polygon Amoy terverifikasi, dan explorer URL.
+  - Diagram arsitektur lengkap (Pengguna ➔ Frontend ➔ Express Gateway ➔ FastAPI Engine & Polygon Smart Contracts).
+  - Panduan instalasi dan menjalankan tiap komponen (Blockchain, AI Engine, Backend, Frontend).
+  - Spesifikasi variabel lingkungan (`.env`).
+  - Catatan data simulasi & disclaimer batasan MVP.
+  - Atribusi teknologi open-source & tim pengembang.
+
+### 3. Verifikasi Mutu & Uji Sistem (Doc 13 & Doc 14) ✅
+- **Blockchain Hardhat Test**: 18/18 skenario uji lulus 100% (IdentityRegistry, AidDisbursement, ReportRegistry).
+- **Frontend Vite Build**: Sukses 100% tanpa error (`✓ 208 modules transformed`).
+- **Backend Express Server**: Berjalan aktif di port 4000 dan melayani seluruh endpoint publik maupun terproteksi.
+- **FastAPI AI Engine**: Model `lr-jabar-multidim-2.0` aktif dengan ROC-AUC 0.934 dan 14 fitur multidimensi BPS Jawa Barat.
 
 ### Model AI Multidimensi v2.0: `lr-jabar-multidim-2.0` (Optimal Sesuai Proposal HackSphere 2026) ✅
 - **Kesesuaian Proposal (Section 3, 4.c, 6.c)**:

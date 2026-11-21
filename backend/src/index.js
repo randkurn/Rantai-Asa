@@ -245,6 +245,117 @@ app.get("/public/tx/:hash", (_q, r) => {
 const reportsStore = [];
 let _reportIdSeq = 1;
 
+// Off-chain stores sesuai Doc 07 (Database & API Documentation)
+const recipientsStore = [];
+const disbursementsStore = [];
+const auditLogsStore = [];
+
+const AID_PROGRAMS = [
+  { id: 1, code: "PKH-2026-P1", name: "Program Keluarga Harapan", period_id: 202611, amount_unit: 750000, threshold: 60, active: true },
+  { id: 2, code: "BPNT-2026-P1", name: "Bantuan Pangan Non-Tunai", period_id: 202611, amount_unit: 600000, threshold: 60, active: true },
+  { id: 3, code: "BERAS-2026-P1", name: "Bantuan Cadangan Beras", period_id: 202611, amount_unit: 300000, threshold: 60, active: true }
+];
+
+// Helper: audit log off-chain (Doc 07 / SRS-FR)
+function logAudit(officerWallet, action, entity, entityId, txHash = null) {
+  auditLogsStore.unshift({
+    id: auditLogsStore.length + 1,
+    officer: officerWallet || "SYSTEM",
+    action,
+    entity,
+    entity_id: entityId,
+    tx_hash: txHash,
+    created_at: new Date().toISOString()
+  });
+}
+
+// ── Doc 07: POST /recipients ──
+app.post("/recipients", auth, (q, r) => {
+  const { refCode, identityHash, regTxHash, programId = 1, periodId = 202611 } = q.body;
+  if (!refCode || !identityHash) {
+    return err(r, 422, "INVALID_INPUT", "refCode and identityHash required");
+  }
+  const id = recipientsStore.length + 1;
+  const newRec = {
+    id,
+    refCode,
+    identityHash,
+    regTxHash: regTxHash || null,
+    programId,
+    periodId,
+    officer: q.user.wallet,
+    status: "REGISTERED",
+    created_at: new Date().toISOString()
+  };
+  recipientsStore.push(newRec);
+  logAudit(q.user.wallet, "REGISTER_RECIPIENT", "RECIPIENT_REF", refCode, regTxHash);
+  r.status(201).json({ id, refCode, status: "REGISTERED" });
+});
+
+// ── Doc 07: POST /disbursements ──
+app.post("/disbursements", auth, (q, r) => {
+  const { refCode, txHash, amount = 750000, programId = 1, periodId = 202611 } = q.body;
+  if (!refCode || !txHash) {
+    return err(r, 422, "INVALID_INPUT", "refCode and txHash required");
+  }
+  const id = disbursementsStore.length + 1;
+  const newDisb = {
+    id,
+    refCode,
+    txHash,
+    amount,
+    programId,
+    periodId,
+    officer: q.user.wallet,
+    status: "DISBURSED",
+    created_at: new Date().toISOString()
+  };
+  disbursementsStore.push(newDisb);
+  logAudit(q.user.wallet, "DISBURSE_AID", "DISBURSEMENT_REF", refCode, txHash);
+  r.status(201).json({ id, refCode, txHash, status: "DISBURSED" });
+});
+
+// ── Doc 07: GET /public/stats ──
+app.get("/public/stats", (_q, r) => {
+  const totalRegistered = recipientsStore.length || 142; // baseline data demo
+  const totalDisbursed = disbursementsStore.length || 98;
+  const totalAmount = disbursementsStore.reduce((sum, d) => sum + (d.amount || 0), 0) || (98 * 750000);
+  r.json({
+    totalRegistered,
+    totalDisbursed,
+    totalAmount,
+    notice: "SIMULASI (Jawa Barat 27 Kab/Kota)"
+  });
+});
+
+// ── Doc 07: GET /public/transactions ──
+app.get("/public/transactions", (q, r) => {
+  const { program, q: searchQuery } = q.query;
+  let items = disbursementsStore.map(d => ({
+    txHash: d.txHash,
+    refId: d.refCode,
+    program: d.programId === 2 ? "BPNT-2026-P1" : "PKH-2026-P1",
+    period: "P1-2026",
+    amount: d.amount,
+    explorerUrl: `https://amoy.polygonscan.com/tx/${d.txHash}`,
+    timestamp: d.created_at
+  }));
+
+  if (program) {
+    items = items.filter(t => t.program.toLowerCase().includes(program.toLowerCase()));
+  }
+  if (searchQuery) {
+    const s = searchQuery.toLowerCase();
+    items = items.filter(t => t.txHash.toLowerCase().includes(s) || t.refId.toLowerCase().includes(s));
+  }
+  r.json(items);
+});
+
+// ── Doc 07: GET /public/programs ──
+app.get("/public/programs", (_q, r) => {
+  r.json(AID_PROGRAMS);
+});
+
 const reportLimiter = rateLimit({ windowMs: 60000, limit: 5, message: { error: "RATE_LIMIT", detail: "Maks 5 laporan/menit per IP" } });
 
 const CATEGORIES = ["DUGAAN_GANDA","TIDAK_LAYAK","TIDAK_TERIMA","TERLAMBAT","SALAH_DATA"];
