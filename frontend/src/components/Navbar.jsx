@@ -53,14 +53,31 @@ export default function Navbar({
 
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
           {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="transition hover:opacity-80"
-              style={{ color: textColor }}
-            >
-              {link.label}
-            </a>
+            link.href === "#report" ? (
+              <button
+                key={link.href}
+                type="button"
+                onClick={() => {
+                  onToggleReports();
+                  setTimeout(() => {
+                    document.getElementById("laporan")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }, 100);
+                }}
+                className="cursor-pointer transition hover:opacity-80"
+                style={{ color: textColor }}
+              >
+                {link.label}
+              </button>
+            ) : (
+              <a
+                key={link.href}
+                href={link.href}
+                className="transition hover:opacity-80"
+                style={{ color: textColor }}
+              >
+                {link.label}
+              </a>
+            )
           ))}
         </nav>
 

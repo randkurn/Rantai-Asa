@@ -1,30 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReportModule from "./ReportModule.jsx";
 
 export default function ReportsSection({ isOpen, onClose }) {
   if (!isOpen) return null;
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleEscape = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
+
   return (
-    <section id="laporan" className="py-12 px-4 bg-[#0a1b2a] border-b border-[rgba(71,158,206,0.18)]">
-      <div className="max-w-[800px] mx-auto space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+    <div
+      id="laporan"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="report-modal-title"
+      className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto bg-slate-950/70 p-4 backdrop-blur-sm"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className="my-6 w-full max-w-[800px] rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <div>
-            <span className="text-xs font-mono font-bold text-[#479ece] uppercase">
+            <span className="text-[10px] font-mono font-bold uppercase text-sky-600">
               Kanal Pengaduan Masyarakat
             </span>
-            <h2 className="text-xl font-bold font-heading text-white">
+            <h2 id="report-modal-title" className="font-heading text-lg font-bold text-slate-900">
               Modul Pelaporan Warga &amp; Relawan Jabar
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg border border-white/20 text-xs text-[#9fb8c9] hover:text-white cursor-pointer"
+            type="button"
+            className="cursor-pointer rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
           >
             ✕ Tutup
           </button>
         </div>
-        <ReportModule />
+        <div className="p-6">
+          <ReportModule />
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

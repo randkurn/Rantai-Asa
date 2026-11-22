@@ -105,7 +105,12 @@ function PublicPortal({
       />
 
       <CtaSection
-        onOpenReports={() => setActiveTab("reports")}
+        onOpenReports={() => {
+          setActiveTab("reports");
+          setTimeout(() => {
+            document.getElementById("laporan")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100);
+        }}
       />
 
       <Footer />
