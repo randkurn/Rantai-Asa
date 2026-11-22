@@ -145,10 +145,13 @@ export default function OfficerWizardModal({
                   <label className="block font-semibold text-white mb-1">Simulasi NIK 16 Digit</label>
                   <input
                     type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]{16}"
                     maxLength={16}
+                    required
                     value={simNik}
                     onChange={(e) => {
-                      setSimNik(e.target.value);
+                      setSimNik(e.target.value.replace(/\D/g, "").slice(0, 16));
                       setDuplicateAlert(false);
                     }}
                     className="w-full px-3 py-2 rounded-xl bg-[#050f18] border border-white/15 font-mono text-white focus:border-[#479ece] focus:outline-none"
@@ -215,11 +218,12 @@ export default function OfficerWizardModal({
                 </button>
                 <button
                   type="button"
+                  disabled={!/^\d{16}$/.test(simNik)}
                   onClick={() => {
                     setDuplicateAlert(false);
                     setWizardStep(2);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-[#479ece] text-[#050f18] font-bold hover:bg-[#bfe6f8] cursor-pointer shadow-md"
+                  className="px-5 py-2.5 rounded-xl bg-[#479ece] text-[#050f18] font-bold hover:bg-[#bfe6f8] cursor-pointer shadow-md disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Sign registerIdentity() →
                 </button>

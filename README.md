@@ -73,9 +73,9 @@ python -m venv venv
 .\venv\Scripts\activate
 pip install -r requirements.txt
 python train.py
-uvicorn main:app --port 8000
+uvicorn main:app --host 127.0.0.1 --port 8001
 ```
-*API docs interaktif tersedia di: `http://localhost:8000/docs`.*
+*API docs interaktif tersedia di: `http://localhost:8001/docs`.*
 
 ### 3. Backend (Express Gateway)
 ```powershell
@@ -105,7 +105,9 @@ PRIVATE_KEY_DEPLOYER=0x...
 PRIVATE_KEY_ORACLE=0x...
 HMAC_SECRET=kunci_rahasia_hmac_server_rantaiasa
 JWT_SECRET=kunci_jwt_sesi_petugas
-AI_SERVICE_URL=http://localhost:8000
+AI_SERVICE_URL=http://localhost:8001
+DATABASE_URL=postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-[NUMBER]-[REGION].pooler.supabase.com:6543/postgres
+DATABASE_SSL=true
 REGISTRY_ADDRESS=0x964C5ACaEf0FFb0866bb0a0EFF55cA87BF39dD84
 DISBURSE_ADDRESS=0xDd9E6cffA4DEB9493D6406A839480673Af13859D
 REPORT_REGISTRY_ADDRESS=0x8b6aEf6e43B5e028af2d1b606Ec2Ee14837D291d

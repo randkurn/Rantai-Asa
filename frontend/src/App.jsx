@@ -23,6 +23,7 @@ import TxInspectorModal from "./components/TxInspectorModal.jsx";
 import OfficerWizardModal from "./components/OfficerWizardModal.jsx";
 import OfficerLoginModal from "./components/OfficerLoginModal.jsx";
 import OfficerDashboard from "./pages/OfficerDashboard.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 import "leaflet/dist/leaflet.css";
 
 function PublicPortal({
@@ -235,6 +236,7 @@ export default function App() {
         }
       />
       <Route path="/officer" element={<OfficerDashboard />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

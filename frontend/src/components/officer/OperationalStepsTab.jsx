@@ -127,10 +127,12 @@ export default function OperationalStepsTab({
                 </label>
                 <input
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]{16}"
                   maxLength={16}
                   required
                   value={nikInput}
-                  onChange={(e) => setNikInput(e.target.value)}
+                  onChange={(e) => setNikInput(e.target.value.replace(/\D/g, "").slice(0, 16))}
                   placeholder="Masukkan 16 digit NIK"
                   className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-slate-900 shadow-2xs transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/15"
                 />

@@ -1027,6 +1027,10 @@ app.get("/public/reports-by-region", (_q, r) => {
   r.json({ data: counts, notice: "Hanya laporan terverifikasi. SIMULASI." });
 });
 
+app.use((q, r) => {
+  err(r, 404, "NOT_FOUND", `route ${q.method} ${q.originalUrl} tidak ditemukan`);
+});
+
 async function start() {
   if (!pool) {
     console.log("ℹ️  DATABASE_URL tidak diset. Backend berjalan dalam mode In-Memory / Simulasi (tanpa PostgreSQL).");

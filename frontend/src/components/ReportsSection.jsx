@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import ReportModule from "./ReportModule.jsx";
 
 export default function ReportsSection({ isOpen, onClose }) {
-  if (!isOpen) return null;
-
   useEffect(() => {
+    if (!isOpen) return undefined;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const handleEscape = (event) => {
@@ -12,10 +11,12 @@ export default function ReportsSection({ isOpen, onClose }) {
     };
     window.addEventListener("keydown", handleEscape);
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = previousOverflow || "";
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   return (
     <div

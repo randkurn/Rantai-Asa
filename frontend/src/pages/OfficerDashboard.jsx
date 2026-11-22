@@ -152,6 +152,14 @@ export default function OfficerDashboard() {
   // Pengacakan NIK Deterministik (SHA-256)
   const handleGeneratePseudonym = async (e) => {
     e.preventDefault();
+    if (!/^\d{16}$/.test(nikInput.trim())) {
+      setVerificationFeedback({
+        status: "ERROR",
+        message: "NIK wajib terdiri dari tepat 16 digit angka.",
+      });
+      setPseudonymHash("");
+      return;
+    }
     setIsHashing(true);
     setVerificationFeedback(null);
 
