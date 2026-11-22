@@ -331,21 +331,6 @@ export default function RegionDisparity({
               {COMPARISON_REGIONS.map((item) => {
                 const status = getStatusInfo(item.value);
                 return (
-<<<<<<< HEAD
-                  <div key={item.name} className="space-y-1.5">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-white">
-                        {item.name}
-                      </span>
-                      {status.label}
-                    </div>
-                    {/* Progress Bar 1 Warna Konsisten */}
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className="h-full rounded-full bg-[#479ece] transition-all duration-500"
-                        style={{ width: item.width }}
-                      />
-=======
                   <div key={item.name} className="flex items-center gap-3">
                     {/* Nama wilayah rata kanan */}
                     <span className="w-32 shrink-0 text-right font-medium text-white sm:w-40">
@@ -366,7 +351,6 @@ export default function RegionDisparity({
                           {status.label}
                         </span>
                       </div>
->>>>>>> 96add906337e9251e2646642ac43bc2272db920b
                     </div>
                   </div>
                 );
