@@ -168,7 +168,7 @@ export default function RecipientOverviewTab({
                       {formatIDR(rec.amount)}
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 font-mono text-sky-600">
-                      {rec.txHash !== "-" ? (
+                      {/^0x[0-9a-fA-F]{64}$/.test(rec.txHash || "") ? (
                         <a
                           href={`https://amoy.polygonscan.com/tx/${rec.txHash}`}
                           target="_blank"

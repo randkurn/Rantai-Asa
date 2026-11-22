@@ -10,6 +10,11 @@ const OPERATIONAL_MENUS = [
 
 const AUDIT_MENUS = [
   {
+    id: "laporan-warga",
+    label: "Laporan Warga",
+    icon: "M12 9v4m0 4h.01M10.29 3.86l-7.2 12.46A2 2 0 004.82 19h14.36a2 2 0 001.73-2.68l-7.2-12.46a2 2 0 00-3.42 0z",
+  },
+  {
     id: "riwayat",
     label: "Riwayat Penyaluran",
     icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",

@@ -835,7 +835,8 @@ app.get("/reports/status/:id", (q, r) => {
 
 // PETUGAS_VERIFIKASI: daftar laporan pending
 app.get("/reports", auth, (q, r) => {
-  const { status = "PENDING", region_code } = q.query;
+  const status = q.query.status === undefined ? "PENDING" : q.query.status;
+  const { region_code } = q.query;
   if (pool) {
     const params = [];
     let sql = "SELECT id, region_code, category, description, photo_url, status, is_anonymous, officer_note, chain_tx_hash, created_at, reviewed_at FROM reports";

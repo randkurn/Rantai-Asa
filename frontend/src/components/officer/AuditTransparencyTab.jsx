@@ -91,7 +91,7 @@ export default function AuditTransparencyTab({
                           {formatIDR(rec.amount)}
                         </td>
                         <td className="px-3 py-3 font-mono text-sky-600">
-                          {rec.txHash !== "-" ? shortHex(rec.txHash) : "-"}
+                          {/^0x[0-9a-fA-F]{64}$/.test(rec.txHash || "") ? shortHex(rec.txHash) : "Belum on-chain"}
                         </td>
                       </tr>
                     ))

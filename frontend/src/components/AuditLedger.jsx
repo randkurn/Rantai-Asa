@@ -15,10 +15,10 @@ export default function AuditLedger({ auditRecords = [], onSelectTx }) {
       const q = searchQuery.toLowerCase().trim();
       const matchQuery =
         !q ||
-        r.txHash.toLowerCase().includes(q) ||
-        r.refId.toLowerCase().includes(q) ||
-        r.identityHash.toLowerCase().includes(q) ||
-        r.province.toLowerCase().includes(q);
+        (r.txHash || "").toLowerCase().includes(q) ||
+        (r.refId || "").toLowerCase().includes(q) ||
+        (r.identityHash || "").toLowerCase().includes(q) ||
+        (r.province || "").toLowerCase().includes(q);
       return matchFilter && matchQuery;
     });
   }, [auditRecords, ledgerFilter, searchQuery]);
@@ -166,9 +166,11 @@ export default function AuditLedger({ auditRecords = [], onSelectTx }) {
                         </div>
                       </td>
                       <td className="px-4 py-3 font-mono text-[11px] text-[#479ece]">
-                        <span className="hover:underline">
-                          {shortHex(row.txHash)}
-                        </span>
+                        {/^0x[0-9a-fA-F]{64}$/.test(row.txHash || "") ? (
+                          <span className="hover:underline">{shortHex(row.txHash)}</span>
+                        ) : (
+                          <span className="text-[10px] text-amber-400">Belum on-chain</span>
+                        )}
                       </td>
                     </tr>
                   );

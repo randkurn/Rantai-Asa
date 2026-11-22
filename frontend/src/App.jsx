@@ -104,7 +104,9 @@ function PublicPortal({
         onSelectTx={setSelectedTxForModal}
       />
 
-      <CtaSection onOpenOfficerModal={handleOpenOfficer} />
+      <CtaSection
+        onOpenReports={() => setActiveTab("reports")}
+      />
 
       <Footer />
 

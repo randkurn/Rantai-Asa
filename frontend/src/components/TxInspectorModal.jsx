@@ -3,6 +3,7 @@ import { shortHex } from "../constants/auditData.js";
 
 export default function TxInspectorModal({ tx, onClose }) {
   if (!tx) return null;
+  const hasChainTx = /^0x[0-9a-fA-F]{64}$/.test(tx.txHash || "");
 
   return (
     <div className="fixed inset-0 z-50 bg-[#050f18]/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -26,19 +27,25 @@ export default function TxInspectorModal({ tx, onClose }) {
             <span className="text-[#9fb8c9]">
               Referensi: <strong>{tx.refId}</strong> ({tx.province})
             </span>
-            <a
-              href={`https://amoy.polygonscan.com/tx/${tx.txHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#479ece] hover:underline font-semibold"
-            >
-              Polygonscan ↗
-            </a>
+            {hasChainTx ? (
+              <a
+                href={`https://amoy.polygonscan.com/tx/${tx.txHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#479ece] hover:underline font-semibold"
+              >
+                Polygonscan ↗
+              </a>
+            ) : (
+              <span className="rounded bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-300">
+                BELUM ON-CHAIN
+              </span>
+            )}
           </div>
 
           <div className="p-3 rounded-xl bg-[#050f18] border border-[rgba(71,158,206,0.2)] font-mono text-[11px] space-y-1">
             <div className="text-[#9fb8c9]">
-              Tx Hash: <span className="text-white break-all">{tx.txHash}</span>
+              Tx Hash: <span className="text-white break-all">{hasChainTx ? tx.txHash : "Belum tersedia — tercatat off-chain/database"}</span>
             </div>
             <div className="text-[#9fb8c9]">
               Identity Hash: <span className="text-[#bfe3f6] break-all">{tx.identityHash}</span>

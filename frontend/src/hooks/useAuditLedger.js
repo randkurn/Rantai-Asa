@@ -42,7 +42,7 @@ export function useAuditLedger() {
           status: "TERCATAT",
           factors: [],
           amount: row.amount,
-          txHash: row.txHash,
+          txHash: row.txHash || "",
           officer: "",
         })));
         setKpis({

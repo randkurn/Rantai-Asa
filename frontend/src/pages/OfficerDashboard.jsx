@@ -10,6 +10,7 @@ import RecipientOverviewTab from "../components/officer/RecipientOverviewTab.jsx
 import OperationalStepsTab from "../components/officer/OperationalStepsTab.jsx";
 import AuditTransparencyTab from "../components/officer/AuditTransparencyTab.jsx";
 import OfficerAccountTab from "../components/officer/OfficerAccountTab.jsx";
+import ReportManagementTab from "../components/officer/ReportManagementTab.jsx";
 
 export default function OfficerDashboard() {
   const { officer, token, logout } = useAuth();
@@ -353,13 +354,13 @@ export default function OfficerDashboard() {
       status: "TERCATAT_BLOCKCHAIN",
       amount: amt,
       timestamp: new Date().toLocaleString("id-ID") + " WIB",
-      txHash: newTx,
+      txHash: newTx || "-",
     };
 
     setRecipientList((prev) => [newRecipient, ...prev]);
     setDisburseNotification({
       refId: newRefId,
-      txHash: newTx,
+      txHash: newTx || null,
       amount: amt,
     });
     setActiveMenu("riwayat");
@@ -401,9 +402,15 @@ export default function OfficerDashboard() {
                   <strong>Bantuan Berhasil Disalurkan:</strong> Nomor Bukti{" "}
                   {disburseNotification.refId} (
                   {formatIDR(disburseNotification.amount)})
-                  <span className="block font-mono text-[11px] text-slate-600">
-                    Kode Bukti: {disburseNotification.txHash}
-                  </span>
+                  {/^0x[0-9a-fA-F]{64}$/.test(disburseNotification.txHash || "") ? (
+                    <span className="block font-mono text-[11px] text-slate-600">
+                      Tx Blockchain: {disburseNotification.txHash}
+                    </span>
+                  ) : (
+                    <span className="block text-[11px] text-amber-700">
+                      Tercatat pada database, belum ada transaksi blockchain.
+                    </span>
+                  )}
                 </div>
               </div>
               <button
@@ -449,6 +456,11 @@ export default function OfficerDashboard() {
               handleExecuteDisbursement={handleExecuteDisbursement}
             />
           )}
+
+          <ReportManagementTab
+            activeMenu={activeMenu}
+            token={token}
+          />
 
           <AuditTransparencyTab
             activeMenu={activeMenu}
