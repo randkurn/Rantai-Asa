@@ -7,7 +7,7 @@ function getStatusInfo(val = 0.23) {
       label: "Sangat Tinggi",
       barClass: "from-red-600 to-rose-500",
       badgeClass: "border-red-500/30 bg-red-500/15 text-red-500",
-      barColor: "#ef4444",
+      barColor: "#dc2626",
     };
   }
   if (val >= 0.35) {
@@ -30,7 +30,7 @@ function getStatusInfo(val = 0.23) {
     label: "Rendah",
     barClass: "from-emerald-500 to-green-400",
     badgeClass: "border-emerald-500/30 bg-emerald-500/15 text-emerald-500",
-    barColor: "#22c55e",
+    barColor: "#10b981",
   };
 }
 
@@ -314,9 +314,10 @@ export default function RegionDisparity({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-          {/* Kiri: Grafik Batang Urgensi Antar Daerah */}
-          <div className="space-y-5 rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-6 lg:col-span-7">
+        {/* Tata letak vertikal: Grafik di atas, Detail Kabupaten/Kota di bawah */}
+        <div className="flex flex-col gap-6">
+          {/* Atas: Grafik Batang Horizontal */}
+          <div className="space-y-5 rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-6">
             <div>
               <h3 className="font-heading text-base font-bold text-white">
                 Perbandingan Tingkat Urgensi Bantuan
@@ -326,10 +327,11 @@ export default function RegionDisparity({
               </p>
             </div>
 
-            <div className="space-y-4 text-xs">
+            <div className="space-y-2.5 text-xs sm:text-sm">
               {COMPARISON_REGIONS.map((item) => {
                 const status = getStatusInfo(item.value);
                 return (
+<<<<<<< HEAD
                   <div key={item.name} className="space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-semibold text-white">
@@ -343,6 +345,28 @@ export default function RegionDisparity({
                         className="h-full rounded-full bg-[#479ece] transition-all duration-500"
                         style={{ width: item.width }}
                       />
+=======
+                  <div key={item.name} className="flex items-center gap-3">
+                    {/* Nama wilayah rata kanan */}
+                    <span className="w-32 shrink-0 text-right font-medium text-white sm:w-40">
+                      {item.name}
+                    </span>
+
+                    {/* Batang berwarna tebal tanpa background track */}
+                    <div className="flex-1">
+                      <div
+                        className="flex h-8 items-center justify-end rounded-r-sm px-2.5 transition-all duration-500 sm:h-9"
+                        style={{
+                          width: item.width,
+                          minWidth: "76px",
+                          backgroundColor: status.barColor,
+                        }}
+                      >
+                        <span className="whitespace-nowrap text-xs font-bold !text-white sm:text-sm">
+                          {status.label}
+                        </span>
+                      </div>
+>>>>>>> 96add906337e9251e2646642ac43bc2272db920b
                     </div>
                   </div>
                 );
@@ -350,9 +374,9 @@ export default function RegionDisparity({
             </div>
           </div>
 
-          {/* Kanan: Dropdown Wilayah & Detail Kartu */}
-          <div className="space-y-3.5 lg:col-span-5">
-            <div className="rounded-2xl border border-[#479ece]/40  p-4">
+          {/* Bawah: Dropdown Wilayah & Detail Kartu */}
+          <div className="space-y-3.5">
+            <div className="rounded-2xl border border-[#479ece]/40 p-4">
               <label
                 htmlFor="region-selector"
                 className="mb-1.5 block text-xs font-semibold text-white"
@@ -400,7 +424,7 @@ export default function RegionDisparity({
               </small>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-3.5">
                 <span className="block text-[11px] text-[#9fb8c9]">
                   Prioritas Bantuan
