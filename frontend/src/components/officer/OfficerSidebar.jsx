@@ -35,7 +35,7 @@ export default function OfficerSidebar({
   const navBtnClass = (id) =>
     `flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 transition ${
       activeMenu === id
-        ? "bg-sky-600 text-white font-semibold shadow-sm"
+        ? "bg-sky-600 !text-white font-semibold shadow-sm"
         : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
     }`;
 
@@ -70,7 +70,7 @@ export default function OfficerSidebar({
             onClick={() => setActiveMenu("data-penerima")}
             className={`flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 font-medium transition ${
               activeMenu === "data-penerima"
-                ? "bg-sky-600 font-semibold text-white shadow-sm"
+                ? "bg-sky-600 font-semibold !text-white shadow-sm"
                 : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >

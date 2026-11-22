@@ -146,7 +146,7 @@ export default function RecipientOverviewTab({
                         }`}
                       >
                         {rec.aiScore} (
-                        {rec.aiStatus === "LAYAK" ? "Layak" : "Tidak"})
+                        {rec.aiScore >= 60 ? "layak" : "Tidak layak"})
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-4 py-3">

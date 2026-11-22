@@ -91,18 +91,12 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
 
         {authMethod === "wallet" ? (
           <div className="space-y-4 text-xs">
-            <div className="rounded-xl border border-sky-200 bg-sky-50/60 p-3.5 text-slate-700">
-              <span className="font-semibold text-sky-800">Autentikasi Aman:</span>
-              <p className="mt-1 leading-relaxed text-[11px] text-slate-600">
-                Masuk menggunakan akun petugas terdaftar (Role: OFFICER) melalui tanda tangan digital tanpa memungut biaya apapun.
-              </p>
-            </div>
 
             <button
               type="button"
               disabled={isAuthenticating}
               onClick={handleWalletLogin}
-              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-sky-600 py-3 text-sm font-bold text-white shadow-md transition hover:bg-sky-700 disabled:opacity-50"
+              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-sky-600 py-3 text-sm font-bold !text-white shadow-md transition hover:bg-sky-700 disabled:opacity-50"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -140,7 +134,7 @@ export default function OfficerLoginModal({ isOpen, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={isAuthenticating}
-                className="w-full cursor-pointer rounded-xl bg-sky-600 py-3 text-sm font-bold text-white shadow-md transition hover:bg-sky-700 disabled:opacity-50"
+                className="w-full cursor-pointer rounded-xl bg-sky-600 py-3 text-sm font-bold !text-white shadow-md transition hover:bg-sky-700 disabled:opacity-50"
               >
                 {isAuthenticating ? "Memverifikasi Kredensial..." : "Masuk ke Dashboard Operasional"}
               </button>

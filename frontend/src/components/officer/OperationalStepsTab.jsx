@@ -30,7 +30,6 @@ export default function OperationalStepsTab({
       ? 600000
       : 300000;
 
-  // Nama tahapan dibuat lebih ramah dan mudah dipahami
   const steps = [
     { number: 1, title: "1. Data Warga" },
     { number: 2, title: "2. Cek Ganda" },
@@ -47,7 +46,7 @@ export default function OperationalStepsTab({
             <div key={step.number} className="flex flex-1 items-center">
               <button
                 onClick={() => setCurrentStep(step.number)}
-                className={`group flex items-center gap-2 text-left cursor-pointer ${
+                className={`group flex cursor-pointer items-center gap-2 text-left ${
                   currentStep === step.number
                     ? "opacity-100"
                     : currentStep > step.number
@@ -82,9 +81,8 @@ export default function OperationalStepsTab({
 
       {/* Langkah 1: Data Warga */}
       {currentStep === 1 && (
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs space-y-6">
-          {/* Header Section */}
-          <div className="flex items-start justify-between gap-4 border-slate-100 pb-2">
+        <div className="space-y-6 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs">
+          <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
               <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-sky-600">
                 Tahap 1 dari 4
@@ -92,15 +90,29 @@ export default function OperationalStepsTab({
               <h2 className="font-heading mt-1 text-xl font-bold text-slate-900">
                 Pendaftaran Data Warga
               </h2>
-              <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
                 Masukkan NIK warga secara teliti. Sistem akan otomatis
                 menyamarkannya menjadi kode acak demi menjaga privasi dan
                 keamanan data pribadi.
               </p>
             </div>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
           </div>
 
-          {/* Form Input */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -179,7 +191,7 @@ export default function OperationalStepsTab({
               <button
                 type="submit"
                 disabled={isHashing}
-                className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 font-bold text-white shadow-xs transition hover:bg-sky-700 disabled:opacity-50"
+                className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 font-bold !text-white shadow-xs transition hover:bg-sky-700 disabled:opacity-50"
               >
                 {isHashing
                   ? "Memproses Keamanan NIK..."
@@ -188,9 +200,8 @@ export default function OperationalStepsTab({
             </div>
           </form>
 
-          {/* Hasil Kode Unik Warga */}
           {pseudonymHash && (
-            <div className="rounded-xl space-y-3">
+            <div className="space-y-3 rounded-xl border border-emerald-200 bg-emerald-50/60 p-4">
               <div>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                   ✓ Berhasil Dibuat — Kode Unik Warga:
@@ -214,80 +225,117 @@ export default function OperationalStepsTab({
 
       {/* Langkah 2: Cek Ganda */}
       {currentStep === 2 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-6">
-          <div>
-            <h2 className="font-heading text-lg font-bold text-slate-900">
-              Pengecekan Penerima Ganda
-            </h2>
-            <p className="text-xs text-slate-500">
-              Sistem secara otomatis memverifikasi riwayat penerima untuk
-              memastikan tidak ada warga yang menerima bantuan lebih dari satu
-              kali pada periode yang sama.
-            </p>
+        <div className="space-y-6 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs">
+          <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+            <div>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-sky-600">
+                Tahap 2 dari 4
+              </span>
+              <h2 className="font-heading mt-1 text-xl font-bold text-slate-900">
+                Pengecekan Penerima Ganda
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                Sistem akan memeriksa riwayat pencairan pada buku digital
+                terpadu untuk memastikan warga belum pernah menerima bantuan
+                pada periode yang sama.
+              </p>
+            </div>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            </div>
           </div>
 
           <div className="space-y-4 text-xs">
             <div>
-              <label className="mb-1 block font-semibold text-slate-700">
-                Kode Unik Warga yang Dicek
+              <label className="mb-1.5 block font-semibold text-slate-700">
+                Kode Unik Warga yang Diperiksa
               </label>
               <input
                 type="text"
                 value={pseudonymHash}
                 onChange={(e) => setPseudonymHash(e.target.value)}
                 placeholder="0x..."
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-slate-900 focus:border-sky-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2.5 font-mono text-slate-900 shadow-2xs transition focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/15"
               />
             </div>
 
-            <button
-              onClick={handleVerifyDuplicate}
-              className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 font-bold text-white shadow-xs hover:bg-sky-700"
-            >
-              Cek Status Duplikat
-            </button>
+            <div>
+              <button
+                onClick={handleVerifyDuplicate}
+                className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 font-bold text-white shadow-xs transition hover:bg-sky-700"
+              >
+                Periksa Riwayat Penerima
+              </button>
+            </div>
 
             {verificationFeedback && (
               <div
-                className={`rounded-xl border p-4 text-xs ${
+                className={`flex items-start gap-3 rounded-xl border p-4 text-xs ${
                   verificationFeedback.status === "VALID"
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                    : "border-rose-200 bg-rose-50 text-rose-800"
+                    ? "border-emerald-200 bg-emerald-50/70 text-emerald-900"
+                    : "border-rose-200 bg-rose-50/70 text-rose-900"
                 }`}
               >
-                <div className="font-bold">
-                  {verificationFeedback.status === "VALID"
-                    ? "Aman, Belum Pernah Menerima Bantuan"
-                    : "Sudah Terdaftar"}
+                <span
+                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white ${
+                    verificationFeedback.status === "VALID"
+                      ? "bg-emerald-600"
+                      : "bg-rose-600"
+                  }`}
+                >
+                  {verificationFeedback.status === "VALID" ? "✓" : "✕"}
+                </span>
+                <div className="leading-relaxed">
+                  <div className="font-bold">
+                    {verificationFeedback.status === "VALID"
+                      ? "Data Terverifikasi — Belum Pernah Menerima Bantuan"
+                      : "Peringatan — Data Sudah Terdaftar pada Periode Ini"}
+                  </div>
+                  {verificationFeedback.message && (
+                    <p className="mt-1 text-slate-700">
+                      {verificationFeedback.message}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex justify-between border-t border-slate-100 pt-4">
+          <div className="flex justify-between border-t border-slate-100 pt-5 text-xs">
             <button
               onClick={() => setCurrentStep(1)}
-              className="cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50"
+              className="cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              ← Kembali
+              ← Kembali ke Data Warga
             </button>
             <button
               disabled={
                 !verificationFeedback || verificationFeedback.status !== "VALID"
               }
               onClick={() => setCurrentStep(3)}
-              className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2 font-bold text-white shadow-xs hover:bg-sky-700 disabled:opacity-40"
+              className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 font-bold text-white shadow-xs transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Lanjut ke Cek Layak →
+              Lanjut ke Penilaian Kelayakan →
             </button>
           </div>
         </div>
       )}
 
-      {/* Langkah 3: Skor Kelayakan */}
+      {/* Langkah 3: Skor Kelayakan (9 Indikator Rumah Tangga + 5 Indikator Wilayah BPS) */}
       {currentStep === 3 && (
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs space-y-6">
-          {/* Header Section */}
+        <div className="space-y-6 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs">
           <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
               <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-sky-600">
@@ -297,9 +345,9 @@ export default function OperationalStepsTab({
                 Penilaian Kelayakan Warga
               </h2>
               <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                Penilaian menggunakan 14 indikator model: 9 indikator rumah
-                tangga yang Anda isi dan 5 indikator wilayah BPS yang dimuat
-                otomatis berdasarkan kabupaten/kota.
+                Penilaian menghitung 14 indikator resmi: 9 indikator kondisi
+                rumah tangga yang diisi petugas dan 5 indikator ekonomi wilayah
+                BPS Jawa Barat secara otomatis.
               </p>
             </div>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
@@ -320,9 +368,8 @@ export default function OperationalStepsTab({
           </div>
 
           <div className="grid grid-cols-1 gap-6 text-xs md:grid-cols-12">
-            {/* Kolom Kiri: 9 indikator rumah tangga (ditambah 5 indikator wilayah otomatis) */}
+            {/* Kolom Kiri: 9 Indikator Rumah Tangga */}
             <div className="space-y-4 md:col-span-7">
-              {/* Baris 1: Jumlah Anggota & Pendidikan Kepala Keluarga */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label
@@ -369,16 +416,13 @@ export default function OperationalStepsTab({
                     }
                     className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 font-medium text-slate-900 shadow-2xs transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/15"
                   >
-                    <option value={1}>
-                      Tidak Sekolah / Tidak Tamat SD / Tamat SD
-                    </option>
+                    <option value={1}>Tidak Sekolah / Tamat SD</option>
                     <option value={2}>Tamat SMP / Sederajat</option>
                     <option value={3}>Tamat SMA / Perguruan Tinggi</option>
                   </select>
                 </div>
               </div>
 
-              {/* Baris 2: Pengeluaran & Kondisi Fisik Rumah */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block font-semibold text-slate-700">
@@ -407,7 +451,7 @@ export default function OperationalStepsTab({
 
                 <div>
                   <label className="mb-1.5 block font-semibold text-slate-700">
-                    4. Kondisi Lantai, Dinding & Atap
+                    4. Kondisi Rumah Tempat Tinggal
                   </label>
                   <select
                     value={aiForm.housing_quality}
@@ -420,113 +464,113 @@ export default function OperationalStepsTab({
                     className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 font-medium text-slate-900 shadow-2xs transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/15"
                   >
                     <option value={1}>
-                      Lantai Tanah / Dinding Bambu / Rumbia
+                      Tidak Layak (Lantai Tanah / Bambu / Tanpa Jamban)
                     </option>
-                    <option value={2}>Semi Permanen / Kayu Murah</option>
+                    <option value={2}>
+                      Semi Permanen / Kamar Mandi Bersama
+                    </option>
                     <option value={3}>Permanen Layak Huni</option>
                   </select>
                 </div>
               </div>
 
-              {/* Indikator tambahan rumah tangga; 5 indikator makro ditambahkan otomatis oleh AI engine */}
+              {/* Indikator 5–8 */}
               <div className="pt-1">
                 <span className="mb-2 block font-semibold text-slate-700">
-                  Indikator Rumah Tangga Tambahan (Centang yang sesuai):
+                  5–8. Kondisi Sosial &amp; Kepemilikan Aset Keluarga:
                 </span>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  {[
-                    {
-                      key: "ind_luas_lantai",
-                      label: "Luas lantai < 8 m² per orang",
-                    },
-                    {
-                      key: "ind_mck",
-                      label: "Tidak memiliki fasilitas MCK sendiri",
-                    },
-                    {
-                      key: "ind_listrik",
-                      label: "Penerangan rumah bukan listrik PLN",
-                    },
-                    {
-                      key: "ind_air_minum",
-                      label: "Air minum dari sumur tak terlindung / sungai",
-                    },
-                    {
-                      key: "ind_bahan_bakar",
-                      label: "Memasak pakai kayu bakar / arang / minyak tanah",
-                    },
-                    {
-                      key: "ind_konsumsi_protein",
-                      label: "Konsumsi daging/susu/ayam hanya 1x seminggu",
-                    },
-                    {
-                      key: "ind_pakaian",
-                      label: "Hanya mampu beli 1 stel pakaian baru/tahun",
-                    },
-                    {
-                      key: "ind_makan",
-                      label: "Hanya sanggup makan 1–2 kali sehari",
-                    },
-                    {
-                      key: "ind_berobat",
-                      label: "Tidak sanggup bayar biaya berobat di puskesmas",
-                    },
-                    {
-                      key: "head_unemployed",
-                      label:
-                        "Kepala keluarga tidak bekerja / penghasilan < Rp 600rb",
-                    },
-                    {
-                      key: "has_disabled_or_elderly",
-                      label: "Terdapat anggota keluarga lansia / disabilitas",
-                    },
-                    {
-                      key: "ind_aset",
-                      label: "Tidak punya tabungan/aset bernilai > Rp 500rb",
-                    },
-                  ].map((item) => (
-                    <label
-                      key={item.key}
-                      className="flex cursor-pointer items-start gap-2 rounded-xl border border-slate-200/80 p-2.5 text-[11px] text-slate-700 transition hover:bg-slate-50"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={Boolean(aiForm[item.key])}
-                        onChange={(e) =>
-                          setAiForm({
-                            ...aiForm,
-                            [item.key]: e.target.checked,
-                          })
-                        }
-                        className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded accent-sky-600"
-                      />
-                      <span className="leading-snug">{item.label}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200/80 p-3 text-slate-700 transition hover:bg-slate-50">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(aiForm.has_disabled_or_elderly)}
+                      onChange={(e) =>
+                        setAiForm({
+                          ...aiForm,
+                          has_disabled_or_elderly: e.target.checked,
+                        })
+                      }
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded accent-sky-600"
+                    />
+                    <span className="leading-snug">
+                      5. Ada anggota lansia atau penyandang disabilitas
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200/80 p-3 text-slate-700 transition hover:bg-slate-50">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(aiForm.head_unemployed)}
+                      onChange={(e) =>
+                        setAiForm({
+                          ...aiForm,
+                          head_unemployed: e.target.checked,
+                        })
+                      }
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded accent-sky-600"
+                    />
+                    <span className="leading-snug">
+                      6. Kepala keluarga tidak bekerja / tanpa penghasilan tetap
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200/80 p-3 text-slate-700 transition hover:bg-slate-50">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(aiForm.land_ownership)}
+                      onChange={(e) =>
+                        setAiForm({
+                          ...aiForm,
+                          land_ownership: e.target.checked,
+                        })
+                      }
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded accent-sky-600"
+                    />
+                    <span className="leading-snug">
+                      7. Memiliki aset lahan / tanah produktif
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200/80 p-3 text-slate-700 transition hover:bg-slate-50">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(aiForm.has_bpjs)}
+                      onChange={(e) =>
+                        setAiForm({
+                          ...aiForm,
+                          has_bpjs: e.target.checked,
+                        })
+                      }
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded accent-sky-600"
+                    />
+                    <span className="leading-snug">
+                      8. Terdaftar sebagai peserta jaminan kesehatan (BPJS)
+                    </span>
+                  </label>
                 </div>
               </div>
 
-              {/* Syarat Gugur Otomatis */}
+              {/* Indikator 9: Syarat Gugur Otomatis */}
               <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-rose-200/80 bg-rose-50/40 p-3 font-medium text-rose-800 transition hover:bg-rose-50/80">
                 <input
                   type="checkbox"
-                  checked={aiForm.is_civil_servant_or_security}
+                  checked={Boolean(aiForm.is_civil_servant_or_security)}
                   onChange={(e) =>
                     setAiForm({
                       ...aiForm,
                       is_civil_servant_or_security: e.target.checked,
                     })
                   }
-                  className="mt-0.5 h-4 w-4 rounded accent-rose-600"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded accent-rose-600"
                 />
                 <span>
-                  Anggota keluarga berstatus ASN / TNI / Polri (otomatis tidak
-                  memenuhi syarat)
+                  9. Anggota keluarga berstatus ASN / TNI / Polri (otomatis
+                  tidak memenuhi syarat)
                 </span>
               </label>
             </div>
 
-            {/* Kolom Kanan: Kotak Skor Hasil (5 kolom) */}
+            {/* Kolom Kanan: Kotak Skor Hasil & 5 Indikator Wilayah */}
             <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/80 p-6 md:col-span-5">
               <div>
                 <div className="flex items-center justify-between">
@@ -558,9 +602,19 @@ export default function OperationalStepsTab({
                   </span>
                 </div>
 
-                {/* Faktor Pertimbangan */}
+                <div className="mt-5 rounded-xl border border-sky-200/70 bg-sky-50/70 p-3 text-[11px] text-sky-900">
+                  <span className="font-bold">
+                    +5 Indikator Wilayah Otomatis (BPS):
+                  </span>
+                  <p className="mt-0.5 leading-relaxed text-sky-800">
+                    Indeks Keparahan (P2), Kedalaman Kemiskinan (P1), Tren 3
+                    Tahun, Garis Kemiskinan Lokal, dan Jumlah Penduduk Miskin di{" "}
+                    <strong>{REGION_NAMES[parseInt(selectedRegion)]}</strong>.
+                  </p>
+                </div>
+
                 {aiScoreResult.factors?.length > 0 && (
-                  <div className="mt-6 space-y-2">
+                  <div className="mt-5 space-y-2">
                     <span className="block text-[11px] font-semibold text-slate-500">
                       Faktor Pertimbangan Utama:
                     </span>
@@ -598,7 +652,6 @@ export default function OperationalStepsTab({
             </div>
           </div>
 
-          {/* Navigasi Bawah */}
           <div className="flex justify-between border-t border-slate-100 pt-5 text-xs">
             <button
               onClick={() => setCurrentStep(2)}
@@ -619,63 +672,84 @@ export default function OperationalStepsTab({
 
       {/* Langkah 4: Penyaluran */}
       {currentStep === 4 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs space-y-6">
-          <div>
-            <h2 className="font-heading text-lg font-bold text-slate-900">
-              Konfirmasi & Catat Penyaluran
-            </h2>
-            <p className="text-xs text-slate-500">
-              Pastikan data di bawah sudah benar. Penyaluran ini bakal langsung
-              dicatat permanen ke sistem.
-            </p>
+        <div className="space-y-6 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs">
+          <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+            <div>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-sky-600">
+                Tahap 4 dari 4
+              </span>
+              <h2 className="font-heading mt-1 text-xl font-bold text-slate-900">
+                Konfirmasi &amp; Catat Penyaluran
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                Periksa kembali seluruh rincian di bawah ini sebelum menyimpan.
+                Data penyaluran yang telah dicatat bersifat permanen dan tidak
+                dapat diubah.
+              </p>
+            </div>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
           </div>
 
-          <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs">
-            <div className="flex justify-between">
-              <span className="text-slate-500">Wilayah:</span>
+          <div className="space-y-3.5 rounded-xl border border-slate-200 bg-slate-50/80 p-5 text-xs">
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+              <span className="text-slate-500">Wilayah Penyaluran</span>
               <span className="font-semibold text-slate-800">
                 {selectedRegion} - {REGION_NAMES[parseInt(selectedRegion)]}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Program Bantuan:</span>
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+              <span className="text-slate-500">Program Bantuan</span>
               <span className="font-semibold text-slate-800">
                 {selectedProgram}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Nominal:</span>
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+              <span className="text-slate-500">Nominal Bantuan</span>
               <span className="font-heading text-sm font-bold text-sky-700">
                 {formatIDR(programAmount)}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Kode Unik Warga:</span>
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+              <span className="text-slate-500">Kode Unik Warga</span>
               <span className="font-mono text-[11px] font-bold text-slate-700">
                 {pseudonymHash ? shortHex(pseudonymHash) : "Belum dibuat"}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Petugas Bertugas:</span>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Petugas Penanggung Jawab</span>
               <span className="font-semibold text-slate-800">
                 {officer?.name || "-"}
               </span>
             </div>
           </div>
 
-          <div className="flex justify-between border-t border-slate-100 pt-4">
+          <div className="flex justify-between border-t border-slate-100 pt-5 text-xs">
             <button
               onClick={() => setCurrentStep(3)}
-              className="cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50"
+              className="cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              ← Kembali
+              ← Kembali ke Cek Layak
             </button>
             <button
               disabled={!pseudonymHash || aiScoreResult.score < 60}
               onClick={handleExecuteDisbursement}
-              className="cursor-pointer rounded-xl bg-sky-600 px-6 py-3 font-bold text-white shadow-xs hover:bg-sky-700 disabled:opacity-40"
+              className="cursor-pointer rounded-xl bg-sky-600 px-6 py-2.5 font-bold text-white shadow-xs transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Simpan & Catat Penyaluran
+              Simpan &amp; Catat Penyaluran
             </button>
           </div>
         </div>

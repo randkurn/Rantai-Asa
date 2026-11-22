@@ -163,29 +163,7 @@ export default function OfficerAccountTab({ activeMenu, officer, token, onLogout
               </div>
             </div>
 
-            {/* Saluran Koordinasi */}
-            <div className="mt-6 flex flex-col items-start justify-between gap-3 rounded-xl border border-sky-100 bg-sky-50/60 p-4 text-xs sm:flex-row sm:items-center">
-              <div>
-                <strong className="block text-slate-800">
-                  Butuh Koordinasi dengan Supervisor?
-                </strong>
-                <span className="text-[11px] text-slate-600">
-                  Hubungi Koordinator Wilayah Bogor: Bp. Hendra Kusuma, M.Si
-                  (Kasie Linjamsos)
-                </span>
-              </div>
-              <a
-                href="mailto:linjamsos@dinsos.jabarprov.go.id"
-                className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-sky-700"
-              >
-                Kirim Pesan Resmi
-              </a>
-            </div>
-
-            <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
-              <span className="text-xs text-slate-500">
-                Selesai bertugas pada perangkat ini?
-              </span>
+            <div className="mt-6 flex items-center justify-end border-t border-slate-100 pt-4">
               <button
                 onClick={onLogout}
                 className="cursor-pointer rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
