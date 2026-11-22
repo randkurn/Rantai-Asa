@@ -2,7 +2,7 @@ import React from "react";
 
 const BENEFITS = [
   "Langsung menolak jika ada orang yang mendaftar bantuan dua kali di periode yang sama",
-  "Menilai kelayakan penerima secara adil berdasarkan 14 kondisi ekonomi & rumah warga Jawa Barat",
+  "Menilai kelayakan penerima dari 9 indikator rumah tangga dan 5 indikator wilayah BPS Jawa Barat",
   "Semua bukti penyaluran bisa dicek langsung oleh masyarakat tanpa perlu mendaftar akun",
   "Nomor KTP (NIK) warga disamarkan menjadi kode acak agar data pribadi tetap aman",
 ];
@@ -35,7 +35,7 @@ const FEATURES = [
   },
   {
     title: "Bantuan Tepat Sasaran",
-    desc: "Mengukur 14 kondisi nyata keluarga kurang mampu di Jawa Barat agar bantuan benar-benar jatuh ke yang membutuhkan.",
+    desc: "Menggabungkan 9 indikator keluarga dengan 5 indikator makro BPS Jawa Barat agar bantuan jatuh ke yang membutuhkan.",
     icon: (
       <path
         strokeLinecap="round"

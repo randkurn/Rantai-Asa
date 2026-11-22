@@ -7,6 +7,7 @@ import {
   useP2Trend,
 } from "./hooks/useStats.js";
 import { useAuditLedger } from "./hooks/useAuditLedger.js";
+import { FALLBACK_JABAR_STATS } from "./constants/auditData.js";
 import { useAuth } from "./context/AuthContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import HeroSection from "./components/HeroSection.jsx";
@@ -155,18 +156,38 @@ export default function App() {
   const { auditRecords, kpis } = useAuditLedger();
 
   const enrichedRegions = useMemo(() => {
-    const sourceStats = regionStats;
-    return sourceStats.map((s) => ({
-      ...s,
-      laporan_verified: reportCounts[String(s.kode)] || 0,
-    }));
+    return FALLBACK_JABAR_STATS.map((fallback) => {
+      const live = regionStats.find(
+        (item) => String(item.kode) === String(fallback.kode),
+      );
+      return {
+        ...fallback,
+        registrasi: live?.registrasi ?? 0,
+        penyaluran: live?.penyaluran ?? 0,
+        laporan_verified:
+          reportCounts[String(fallback.kode)] ?? live?.laporan_verified ?? 0,
+      };
+    });
   }, [regionStats, reportCounts]);
 
   const activeRegion = useMemo(
-    () =>
-      enrichedRegions.find(
+    () => {
+      const found = enrichedRegions.find(
         (r) => String(r.kode) === String(selectedRegionCode),
-      ) || enrichedRegions[0],
+      ) || enrichedRegions[0];
+      return found || {
+        kode: Number(selectedRegionCode),
+        nama: "Belum tersedia",
+        p2_terkini: 0,
+        p1_terkini: 0,
+        tren: 0,
+        garis_kemiskinan_k: 0,
+        penduduk_miskin_k: 0,
+        registrasi: 0,
+        penyaluran: 0,
+        laporan_verified: 0,
+      };
+    },
     [enrichedRegions, selectedRegionCode],
   );
 

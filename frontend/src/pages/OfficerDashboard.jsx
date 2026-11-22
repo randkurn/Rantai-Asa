@@ -42,17 +42,10 @@ export default function OfficerDashboard() {
     head_unemployed: true,
   });
   const [aiScoreResult, setAiScoreResult] = useState({
-    score: 95,
-    label: "LAYAK",
-    factors: [
-      {
-        name: "Pita Pengeluaran Rendah (< 0.8x Garis Kemiskinan)",
-        impact: "+",
-      },
-      { name: "Kondisi Rumah Tidak Layak Huni", impact: "+" },
-      { name: "Kepala Keluarga Tidak Bekerja Tetap", impact: "+" },
-    ],
-    modelVersion: "lr-jabar-multidim-2.0",
+    score: 0,
+    label: "TIDAK_LAYAK",
+    factors: [],
+    modelVersion: "Menunggu penilaian AI",
   });
   const [isScoring, setIsScoring] = useState(false);
   const [disburseNotification, setDisburseNotification] = useState(null);

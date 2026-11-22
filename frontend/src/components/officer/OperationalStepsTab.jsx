@@ -297,8 +297,9 @@ export default function OperationalStepsTab({
                 Penilaian Kelayakan Warga
               </h2>
               <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                Penilaian kelayakan keluarga dihitung otomatis berdasarkan 14
-                indikator resmi BPS Jawa Barat agar bantuan tepat sasaran.
+                Penilaian menggunakan 14 indikator model: 9 indikator rumah
+                tangga yang Anda isi dan 5 indikator wilayah BPS yang dimuat
+                otomatis berdasarkan kabupaten/kota.
               </p>
             </div>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
@@ -319,7 +320,7 @@ export default function OperationalStepsTab({
           </div>
 
           <div className="grid grid-cols-1 gap-6 text-xs md:grid-cols-12">
-            {/* Kolom Kiri: Form 14 Indikator BPS (7 kolom) */}
+            {/* Kolom Kiri: 9 indikator rumah tangga (ditambah 5 indikator wilayah otomatis) */}
             <div className="space-y-4 md:col-span-7">
               {/* Baris 1: Jumlah Anggota & Pendidikan Kepala Keluarga */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -427,10 +428,10 @@ export default function OperationalStepsTab({
                 </div>
               </div>
 
-              {/* Kelompok 5-14: Indikator Kriteria BPS */}
+              {/* Indikator tambahan rumah tangga; 5 indikator makro ditambahkan otomatis oleh AI engine */}
               <div className="pt-1">
                 <span className="mb-2 block font-semibold text-slate-700">
-                  5–14. Kriteria Kondisi Rumah Tangga (Centang yang sesuai):
+                  Indikator Rumah Tangga Tambahan (Centang yang sesuai):
                 </span>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {[

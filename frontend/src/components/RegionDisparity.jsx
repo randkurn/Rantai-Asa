@@ -335,12 +335,12 @@ export default function RegionDisparity({
                       <span className="font-semibold text-white">
                         {item.name}
                       </span>
-                        {status.label}
+                      {status.label}
                     </div>
-                    {/* Progress Bar Interaktif */}
+                    {/* Progress Bar 1 Warna Konsisten */}
                     <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
                       <div
-                        className={`h-full rounded-full bg-gradient-to-r ${status.barClass} transition-all duration-500`}
+                        className="h-full rounded-full bg-[#479ece] transition-all duration-500"
                         style={{ width: item.width }}
                       />
                     </div>
@@ -378,9 +378,6 @@ export default function RegionDisparity({
                 <span className="text-[#9fb8c9]">
                   Batas Minimum Biaya Hidup
                 </span>
-                <span className="rounded bg-[rgba(71,158,206,0.15)] px-2 py-0.5 font-mono text-[10px] text-[#479ece]">
-                  Standar BPS
-                </span>
               </div>
               <div className="font-heading text-2xl font-extrabold text-white">
                 {formatIDR(
@@ -414,9 +411,6 @@ export default function RegionDisparity({
                 >
                   {activeStatus.label}
                 </span>
-                <small className="mt-1.5 block text-[10px] leading-snug text-[#9fb8c9]">
-                  Tingkat berat beban ekonomi warga
-                </small>
               </div>
 
               <div className="rounded-2xl border border-[rgba(71,158,206,0.22)] bg-white/[0.04] p-3.5">
@@ -426,9 +420,6 @@ export default function RegionDisparity({
                 <span className="font-heading mt-1 block text-lg font-bold text-[#479ece]">
                   {getDepthLabel(currentDepth)}
                 </span>
-                <small className="mt-1.5 block text-[10px] leading-snug text-[#9fb8c9]">
-                  Selisih penghasilan dari batas layak
-                </small>
               </div>
             </div>
           </div>

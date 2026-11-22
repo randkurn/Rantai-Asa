@@ -55,8 +55,8 @@ export default function VerificationFlow({
                   3. Penilaian Kelayakan Otomatis
                 </b>
                 <small className="text-[11px] text-[#9fb8c9]">
-                  Menghitung 14 kondisi ekonomi keluarga (pendapatan, tempat
-                  tinggal, tanggungan, hingga status pekerjaan)
+                  Menghitung 9 indikator rumah tangga dan 5 indikator makro
+                  wilayah BPS secara otomatis berdasarkan kabupaten/kota
                 </small>
               </div>
             </div>

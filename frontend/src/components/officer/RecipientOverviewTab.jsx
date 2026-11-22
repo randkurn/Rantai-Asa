@@ -43,7 +43,7 @@ export default function RecipientOverviewTab({
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <span className="text-xs text-slate-500">Sistem Penilai</span>
           <div className="font-heading mt-1.5 text-2xl font-bold text-emerald-600">
-            14 Indikator
+            9 + 5 Indikator
           </div>
         </div>
       </div>
