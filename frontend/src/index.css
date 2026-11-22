@@ -237,3 +237,11 @@ h3,
   color: var(--b);
   border-color: var(--b-l);
 }
+
+/* Membuat semua kartu, input, dan tombol pada halaman officer bersudut tajam */
+.rounded-2xl,
+.rounded-xl,
+.rounded-lg,
+.rounded-md {
+  border-radius: 0px !important;
+}
